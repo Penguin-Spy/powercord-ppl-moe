@@ -18,4 +18,4 @@ This is a powercord plugin that displays a user's ppl.moe profile as a new tab i
 # License
 
 yeah idk rn
-this reposotory uses modified snippets of code from https://github.com/cyyynthia/pronoundb-powercord and https://github.com/Ser-Ames/discord-bio
+this reposotory uses modified snippets of code from https://github.com/cyyynthia/pronoundb-powercord
