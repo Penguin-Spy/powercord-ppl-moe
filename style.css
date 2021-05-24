@@ -1,0 +1,14 @@
+.ppl-moe-section:first-child {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-column-gap: 16px;
+  grid-row-gap: 12px;
+  padding: 20px 0;
+}
+.ppl-moe-section + .ppl-moe-section {
+  border-top: 1px solid var(--background-modifier-accent);
+  padding: 20px 0;
+}
+.ppl-moe-link:hover {
+  text-decoration: underline;
+}
