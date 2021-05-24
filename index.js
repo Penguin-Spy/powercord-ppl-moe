@@ -48,10 +48,6 @@ class PplMoe extends Plugin {
       .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank' class='ppl-moe-link'>$1</a>")
       .replace(/  $/gim, '<br>')
       
-      /*<a class="anchor-3Z-8Bb anchorUnderlineOnHover-2ESHQB" title="https://gamebanana.com/mods/49554" href="https://gamebanana.com/mods/49554" rel="noreferrer noopener" target="_blank" role="button" tabindex="0">https://gamebanana.com/mods/49554</a>*/
-      
-      console.log(bioHTML);
-      
       return React.createElement('div', { },
         React.createElement('div', { className: "userInfoSectionHeader-CBvMDh" }, `about`),
         React.createElement('div', { className: "marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj", dangerouslySetInnerHTML: { __html: bioHTML} })  // whoooo
@@ -101,8 +97,10 @@ class PplMoe extends Plugin {
           case 404: {
             this.setState({
               ppl_moe: {
-                error: "No profile found.",
-                code: e.statusCode
+                error: {
+                  message: "No profile found.",
+                  code: e.statusCode
+                }
               }
             });
             break;
@@ -110,8 +108,10 @@ class PplMoe extends Plugin {
           case 429: {
             this.setState({
               ppl_moe: {
-                error: "get rate limited lmao",
-                code: e.statusCode
+                error: {
+                  message: "get rate limited lmao",
+                  code: e.statusCode
+                }
               }
             });
             break;
@@ -120,16 +120,16 @@ class PplMoe extends Plugin {
             console.log(e)
             this.setState({
               ppl_moe: {
-                error: "Unknown error, check dev tools console for more info",
-                code: e.statusCode
+                error: {
+                  message: "Unknown error, check dev tools console for more info",
+                  code: e.statusCode
+                }
               }
             });
             break;
           }
         }
       }
-      console.log("[ppl-moe-user-load]:");
-      console.log(this.state.ppl_moe);
     });
     
     inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
@@ -158,22 +158,34 @@ class PplMoe extends Plugin {
       const body = res.props.children.props.children[1];
       body.props.children = [];
 
-      // ik it's ugly, but it works so :)
-      body.props.children.push(
-        React.createElement('div', { className: "infoScroller-3EYYns thin-1ybCId scrollerBase-289Jih fade-2kXiP2", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
-          React.createElement('div', { className: "ppl-moe-section" }, [
-            _this.generateInfoDiv(this.state.ppl_moe.info, 'gender'),
-            _this.generateInfoDiv(this.state.ppl_moe.info, 'pronouns'),
-            _this.generateInfoDiv(this.state.ppl_moe.info, 'location'),
-            _this.generateInfoDiv(this.state.ppl_moe.info, 'language'),
-            _this.generateInfoDiv(this.state.ppl_moe.info, 'website'),
-            _this.generateInfoDiv(this.state.ppl_moe.info, 'birthday')
-          ]),
-          React.createElement('div', { className: "ppl-moe-section" }, [
-            _this.generateBioDiv(this.state.ppl_moe.bio),
-          ])
+      if (this.state.ppl_moe.error) {
+        body.props.children.push(
+          React.createElement('div', { className: "infoScroller-3EYYns thin-1ybCId scrollerBase-289Jih fade-2kXiP2", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
+            React.createElement('div', { className: "ppl-moe-section" }, 
+              React.createElement('div', { className: "userInfoSectionHeader-CBvMDh" }, `Error ${this.state.ppl_moe.error.code}:`),
+              React.createElement('div', { className: "marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj" }, `${this.state.ppl_moe.error.message}`)
+            )
+          )
         )
-      )
+      } else {
+
+        // ik it's ugly, but it works so :)
+        body.props.children.push(
+          React.createElement('div', { className: "infoScroller-3EYYns thin-1ybCId scrollerBase-289Jih fade-2kXiP2", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
+            React.createElement('div', { className: "ppl-moe-section" }, [
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'gender'),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'pronouns'),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'location'),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'language'),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'website'),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'birthday')
+            ]),
+            React.createElement('div', { className: "ppl-moe-section" }, [
+              _this.generateBioDiv(this.state.ppl_moe.bio),
+            ])
+          )
+        )
+      }
       
       return res;
     });
@@ -201,6 +213,10 @@ class PplMoe extends Plugin {
     const UserProfile = DecoratedUserProfileBody.prototype.render.call({ props: { forwardedRef: null } }).type
 
     return UserProfile
+  }
+  
+  _extractFromFlux (FluxContainer) {
+    return FluxContainer.prototype.render.call({ memoizedGetStateFromStores: () => null }).type
   }
   
 }
