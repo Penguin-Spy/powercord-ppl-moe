@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities')
 const { inject, uninject } = require('powercord/injector')
-const { React, getAllModules, getModuleByDisplayName } = require('powercord/webpack')
+const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack')
 const { TabBar } = require('powercord/components');
 const { get } = require('powercord/http');
 
@@ -11,27 +11,27 @@ class PplMoe extends Plugin {
       .then(r => r.body);
   }
   
-  generateInfoDiv(info, key) {
+  generateInfoDiv(info, key, classes) {
     if(info[key] != "") { // If this field isn't empty
       let keyElement;
       
       if(key == 'website') {  // If it's the website, make it a link to the text
-        keyElement = React.createElement('div', { className: "marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj" }, 
+        keyElement = React.createElement('div', { className: classes.userInfoSectionText }, 
           React.createElement('a', { className: "ppl-moe-link", href: info[key], target: "_blank" }, `${info[key]}`)
         )
       } else {
-        keyElement = React.createElement('div', { className: "marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj" }, `${info[key]}`)
+        keyElement = React.createElement('div', { className: classes.userInfoSectionText }, `${info[key]}`)
       }
       
       return React.createElement('div', { },
-        React.createElement('div', { className: "userInfoSectionHeader-CBvMDh" }, `${key}`),
+        React.createElement('div', { className: classes.userInfoSectionHeader }, `${key}`),
         keyElement
       )
     }
     return null;
   }
   
-  generateBioDiv(bioMarkdown) {
+  generateBioDiv(bioMarkdown, classes) {
     if(bioMarkdown != "") { // If a bio has been written
       const bioHTML = bioMarkdown
       .replace(/"/gim, "&quot;")  // Sanitize HTML stuff (so you can't put XSS in your bio :P
@@ -49,8 +49,8 @@ class PplMoe extends Plugin {
       .replace(/  $/gim, '<br>')
       
       return React.createElement('div', { },
-        React.createElement('div', { className: "userInfoSectionHeader-CBvMDh" }, `about`),
-        React.createElement('div', { className: "marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj", dangerouslySetInnerHTML: { __html: bioHTML} })  // whoooo
+        React.createElement('div', { className: classes.userInfoSectionHeader }, `about`),
+        React.createElement('div', { className: classes.userInfoSectionText, dangerouslySetInnerHTML: { __html: bioHTML} })  // whoooo dangerous inner html! (this is sanitized fully above, no user-written valid html can exist in this string)
       )
     }
   }
@@ -66,9 +66,14 @@ class PplMoe extends Plugin {
     const _this = this;
     //const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
-    const { tabBarItem } = await getAllModules(['tabBarItem'])[1]
+    const classes = { // Thanks to 
+      tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
+      infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].scrollerBase,
+      userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader,
+      userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
+    }
 
-    // TODO
+    // TODO (unmodified from https://github.com/cyyynthia/pronoundb-powercord, but also unused, just here as a starting point when i get around to writing this)
     /*inject('ppl-moe-messages-header', MessageHeader, 'default', function ([ props ], res) {
       res.props.children[1].props.children.push(
         React.createElement(
@@ -85,7 +90,7 @@ class PplMoe extends Plugin {
       return res
     })*/
     
-    inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {
+    inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {  // Apparently this being async can sometimes not work, but it has always worked in my testing & the discord.bio plugin does it too.
       const { user } = this.props;
       if (!user || user.bot) return;
 
@@ -140,7 +145,7 @@ class PplMoe extends Plugin {
 
       const bioTab = React.createElement(TabBar.Item, {
         key: 'PPL_MOE',
-        className: tabBarItem,
+        className: classes.tabBarItem,
         id: 'PPL_MOE'
       }, 'ppl.moe');
 
@@ -160,10 +165,10 @@ class PplMoe extends Plugin {
 
       if (this.state.ppl_moe.error) {
         body.props.children.push(
-          React.createElement('div', { className: "infoScroller-3EYYns thin-1ybCId scrollerBase-289Jih fade-2kXiP2", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
+          React.createElement('div', { className: classes.infoScroller, style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
             React.createElement('div', { className: "ppl-moe-section" }, 
-              React.createElement('div', { className: "userInfoSectionHeader-CBvMDh" }, `Error ${this.state.ppl_moe.error.code}:`),
-              React.createElement('div', { className: "marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj" }, `${this.state.ppl_moe.error.message}`)
+              React.createElement('div', { className: classes.userInfoSectionHeader }, `Error ${this.state.ppl_moe.error.code}:`),
+              React.createElement('div', { className: classes.userInfoSectionText }, `${this.state.ppl_moe.error.message}`)
             )
           )
         )
@@ -171,17 +176,17 @@ class PplMoe extends Plugin {
 
         // ik it's ugly, but it works so :)
         body.props.children.push(
-          React.createElement('div', { className: "infoScroller-3EYYns thin-1ybCId scrollerBase-289Jih fade-2kXiP2", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
+          React.createElement('div', { className: classes.infoScroller, style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
             React.createElement('div', { className: "ppl-moe-section" }, [
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'gender'),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'pronouns'),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'location'),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'language'),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'website'),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'birthday')
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'gender', classes),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'pronouns', classes),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'location', classes),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'language', classes),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'website', classes),
+              _this.generateInfoDiv(this.state.ppl_moe.info, 'birthday', classes)
             ]),
             React.createElement('div', { className: "ppl-moe-section" }, [
-              _this.generateBioDiv(this.state.ppl_moe.bio),
+              _this.generateBioDiv(this.state.ppl_moe.bio, classes),
             ])
           )
         )
@@ -194,10 +199,13 @@ class PplMoe extends Plugin {
 
   pluginWillUnload () {
     //uninject('ppl-moe-messages-header')
+    uninject('ppl-moe-user-load')
     uninject('ppl-moe-user-tab-bar')
     uninject('ppl-moe-user-body')
   }
 
+  /* The following code is modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
+  
   /*async _getMessageHeader () {
     const d = (m) => {
       const def = m.__powercordOriginal_default ?? m.default
@@ -218,6 +226,8 @@ class PplMoe extends Plugin {
   _extractFromFlux (FluxContainer) {
     return FluxContainer.prototype.render.call({ memoizedGetStateFromStores: () => null }).type
   }
+  
+  /* End of code from pronoundb-powercord */
   
 }
 
