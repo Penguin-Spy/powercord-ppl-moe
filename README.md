@@ -8,7 +8,7 @@ This is a powercord plugin that displays a user's ppl.moe profile as a new tab i
 - [x] Don't use hard-coded classes that will break when Discord changes stuff
 - [ ] Load icon CSS if Comfy theme (+ others?) is enabled
 - [x] Don't commit copyright infringement
-- [ ] i18n (translations & also emojis in field titles like in the real site)
+- [X] i18n (able to load them, only english  strings exist currently)
 - [ ] Hide tab if the user doesn't have a ppl.moe profile
 - [ ] Display the user's pronouns next to their name in messages (like the pronoundb plugin)
 - [ ] Display the user's badges (Admin, Beta tester, bug reporter [any others?])
@@ -18,5 +18,5 @@ This is a powercord plugin that displays a user's ppl.moe profile as a new tab i
 
 # License
 
-yeah idk rn
+MIT License, Copyright Penguin_Spy 2021
 this reposotory uses modified snippets of code from https://github.com/cyyynthia/pronoundb-powercord

@@ -12,22 +12,3 @@
 .ppl-moe-link:hover {
   text-decoration: underline;
 }
-/* Only for comfy theme
-/*.tabBarContainer-1s1u-z:not(.flex-1xMQg5) [aria-controls="PPL_MOE-tab"] {
-    text-indent: 100%;
-    overflow: hidden;
-    margin: 0 30px;
-    width: 30px;
-}
-.tabBarContainer-1s1u-z:not(.flex-1xMQg5) [aria-controls="PPL_MOE-tab"]:after {
-  position: absolute;
-  content: "";
-  width: 30px;
-  height: 30px;
-  background-size: 100%;
-  background-repeat: no-repeat;
-  bottom: 18px;
-}
-[aria-controls="PPL_MOE-tab"]:after {
-  background-image: url("https://cdn.discordapp.com/icons/267500017260953601/034b9f1489370e90e499f426d7ea7bd6.webp?size=128");
-}*/

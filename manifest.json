@@ -1,6 +1,6 @@
 {
   "name": "ppl.moe",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "(ideally) shows ppl.moe info in a new user modal tab.",
   "author": "Penguin_Spy",
   "permissions": "ext_api",

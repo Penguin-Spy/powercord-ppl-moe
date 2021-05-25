@@ -1,19 +1,22 @@
 const { Plugin } = require('powercord/entities')
 const { inject, uninject } = require('powercord/injector')
-const { React, getModule, getAllModules, getModuleByDisplayName } = require('powercord/webpack')
-const { TabBar } = require('powercord/components');
-const { get } = require('powercord/http');
+const { React, getModule, getAllModules, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack')
+const { TabBar } = require('powercord/components')
+const { get } = require('powercord/http')
+const i18n = require('./i18n');
+
+//const Settings = require('./components/Settings.jsx')
 
 class PplMoe extends Plugin {
   
   async fetchAbout(id) {
     return await get(`https://ppl.moe/api/user/discord/${id}`)
-      .then(r => r.body);
+      .then(r => r.body)
   }
   
   generateInfoDiv(info, key, classes) {
     if(info[key] != "") { // If this field isn't empty
-      let keyElement;
+      let keyElement
       
       if(key == 'website') {  // If it's the website, make it a link to the text
         keyElement = React.createElement('div', { className: classes.userInfoSectionText }, 
@@ -24,14 +27,14 @@ class PplMoe extends Plugin {
       }
       
       return React.createElement('div', { },
-        React.createElement('div', { className: classes.userInfoSectionHeader }, `${key}`),
+        React.createElement('div', { className: classes.userInfoSectionHeader }, Messages[`PPL_MOE_${key.toUpperCase()}`]),
         keyElement
       )
     }
-    return null;
+    return null
   }
   
-  generateBioDiv(bioMarkdown, classes) {
+  generateBioDiv(bioMarkdown, name, classes) {
     if(bioMarkdown != "") { // If a bio has been written
       const bioHTML = bioMarkdown
       .replace(/"/gim, "&quot;")  // Sanitize HTML stuff (so you can't put XSS in your bio :P
@@ -46,29 +49,34 @@ class PplMoe extends Plugin {
       .replace(/\*(.*)\*/gim, '<i>$1</i>')
       .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
       .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank' class='ppl-moe-link'>$1</a>")
-      .replace(/  $/gim, '<br>')
+      .replace(/  $/gim, '<br>')  // double space @ end of lines is line break
+      .replace(/(^|[^\n])\n{2}(?!\n)/g, "$1<br>") // double newline, no spaces is line break, RegEx magic: https://stackoverflow.com/questions/18011260/regex-to-match-single-new-line-regex-to-match-double-new-line#answer-18012521
       
       return React.createElement('div', { },
-        React.createElement('div', { className: classes.userInfoSectionHeader }, `about`),
+        React.createElement('div', { className: classes.userInfoSectionHeader }, `${Messages.PPL_MOE_ABOUT} ${name}`),
         React.createElement('div', { className: classes.userInfoSectionText, dangerouslySetInnerHTML: { __html: bioHTML} })  // whoooo dangerous inner html! (this is sanitized fully above, no user-written valid html can exist in this string)
       )
     }
   }
   
   async startPlugin () {
+    powercord.api.i18n.loadAllStrings(i18n);
     this.loadStylesheet('style.css')
+    //if(powercord.styleManager.themes.has("Comfy-git-clone")) {
+      //this.loadStylesheet('comfy.css')
+    //}
     /*powercord.api.settings.registerSettings('ppl-moe', {
       category: this.entityID,
       label: 'ppl.moe',
       render: Settings
     })*/
 
-    const _this = this;
+    const _this = this
     //const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
     const classes = { // Thanks to 
       tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
-      infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].scrollerBase,
+      infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
       userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader,
       userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
     }
@@ -91,84 +99,53 @@ class PplMoe extends Plugin {
     })*/
     
     inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {  // Apparently this being async can sometimes not work, but it has always worked in my testing & the discord.bio plugin does it too.
-      const { user } = this.props;
-      if (!user || user.bot) return;
+      const { user } = this.props
+      if (!user || user.bot) return
 
       try {
-        const about = await _this.fetchAbout(user.id);
-        this.setState({ ppl_moe: about });
+        const about = await _this.fetchAbout(user.id)
+        this.setState({ ppl_moe: about })
       } catch (e) {
-        switch (e.statusCode) {
-          case 404: {
-            this.setState({
-              ppl_moe: {
-                error: {
-                  message: "No profile found.",
-                  code: e.statusCode
-                }
-              }
-            });
-            break;
+        this.setState({
+          ppl_moe: {
+            error: e.statusCode ? e.statusCode : 'UNKNOWN'  // Directly corresponds to a translation key
           }
-          case 429: {
-            this.setState({
-              ppl_moe: {
-                error: {
-                  message: "get rate limited lmao",
-                  code: e.statusCode
-                }
-              }
-            });
-            break;
-          }
-          default: {
-            console.log(e)
-            this.setState({
-              ppl_moe: {
-                error: {
-                  message: "Unknown error, check dev tools console for more info",
-                  code: e.statusCode
-                }
-              }
-            });
-            break;
-          }
-        }
+        })
       }
-    });
+    })
     
     inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
-      const { user } = this.props;
+      const { user } = this.props
 
       // Do not add a tab if there is no tab bar, no user, or the user's a bot
-      if (!res || !user || user.bot ) return res;
+      if (!res || !user || user.bot ) return res
 
       const bioTab = React.createElement(TabBar.Item, {
-        key: 'PPL_MOE',
+        key: "PPL_MOE",
         className: classes.tabBarItem,
-        id: 'PPL_MOE'
-      }, 'ppl.moe');
+        id: "PPL_MOE"
+      }, Messages.PPL_MOE_TAB)
 
       // Add the ppl.moe tab bar item to the list
       res.props.children.props.children.push(bioTab)
 
-      return res;
-    });
+      return res
+    })
 
     inject('ppl-moe-user-body', UserProfile.prototype, 'render', function (_, res) {
       // If we're in a different section, don't do anything
-      if (this.props.section !== 'PPL_MOE') return res;
+      if (this.props.section !== "PPL_MOE") return res
 
       // Find the body, clear it, & add our info
-      const body = res.props.children.props.children[1];
-      body.props.children = [];
+      const body = res.props.children.props.children[1]
+      body.props.children = []
 
       if (this.state.ppl_moe.error) {
         body.props.children.push(
-          React.createElement('div', { className: classes.infoScroller, style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
+          React.createElement('div', { className: classes.infoScroller, dir: "ltr", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
             React.createElement('div', { className: "ppl-moe-section" }, 
-              React.createElement('div', { className: classes.userInfoSectionHeader }, `Error ${this.state.ppl_moe.error.code}:`),
-              React.createElement('div', { className: classes.userInfoSectionText }, `${this.state.ppl_moe.error.message}`)
+              React.createElement('div', { className: classes.userInfoSectionHeader }, `${Messages.PPL_MOE_ERROR}: ${this.state.ppl_moe.error}`), // This section is confusing but basically it translates "Error: 404"
+              React.createElement('div', { className: classes.userInfoSectionText }, Messages[`PPL_MOE_ERROR_${this.state.ppl_moe.error}`])       // And then this part translates "No profile found"
             )
           )
         )
@@ -176,7 +153,7 @@ class PplMoe extends Plugin {
 
         // ik it's ugly, but it works so :)
         body.props.children.push(
-          React.createElement('div', { className: classes.infoScroller, style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
+          React.createElement('div', { className: classes.infoScroller, dir: "ltr", style: {'overflow': "hidden scroll", 'padding-right': "12px"} },
             React.createElement('div', { className: "ppl-moe-section" }, [
               _this.generateInfoDiv(this.state.ppl_moe.info, 'gender', classes),
               _this.generateInfoDiv(this.state.ppl_moe.info, 'pronouns', classes),
@@ -186,14 +163,15 @@ class PplMoe extends Plugin {
               _this.generateInfoDiv(this.state.ppl_moe.info, 'birthday', classes)
             ]),
             React.createElement('div', { className: "ppl-moe-section" }, [
-              _this.generateBioDiv(this.state.ppl_moe.bio, classes),
+              _this.generateBioDiv(this.state.ppl_moe.bio, this.state.ppl_moe.name, classes),
             ])
           )
         )
       }
+      console.log(this.state.ppl_moe)
       
-      return res;
-    });
+      return res
+    })
     
   }
 

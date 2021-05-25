@@ -1,13 +1,15 @@
 {
-  "PPLMOE_TAB": "ppl.moe",
-  "PPLMOE_GENDER": "⚧️ Gender",
-  "PPLMOE_PRONOUNS": "⚧️ Pronouns",
-  "PPLMOE_LOCATION": "📍 Location",
-  "PPLMOE_LANGUAGE": "🌎 Language",
-  "PPLMOE_WEBSITE": "🌐 Website",
-  "PPLMOE_BIRTHDAY": "🎂 Birthday",
-  "PPLMOE_ABOUT": "📝 All about ",
-  "PPLMOE_ERROR_404": "No profile found (this message shouldn't appear ideally)",
-  "PPLMOE_ERROR_429": "Get rate limited lmao",
-  "PPLMOE_ERROR_UNKNOWN": "An unknown error occured. Please submit an issue on this plugins github & include the following information:"
+  "PPL_MOE_TAB": "ppl.moe",
+  "PPL_MOE_GENDER": "⚧️ Gender",
+  "PPL_MOE_PRONOUNS": "⚧️ Pronouns",
+  "PPL_MOE_LOCATION": "📍 Location",
+  "PPL_MOE_LANGUAGE": "🌎 Language",
+  "PPL_MOE_WEBSITE": "🌐 Website",
+  "PPL_MOE_BIRTHDAY": "🎂 Birthday",
+  "PPL_MOE_ABOUT": "📝 All about",
+  "PPL_MOE_SETTINGS_TAB_ICON": "Tab Icon",
+  "PPL_MOE_ERROR": "Error",
+  "PPL_MOE_ERROR_404": "No profile found (this message shouldn't appear ideally)",
+  "PPL_MOE_ERROR_429": "Get rate limited lmao",
+  "PPL_MOE_ERROR_UNKNOWN": "An unknown error occured. Please submit an issue on this plugins github & include the following information:"
 }
