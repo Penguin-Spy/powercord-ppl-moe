@@ -8,8 +8,9 @@
   "PPL_MOE_BIRTHDAY": "🎂 Birthday",
   "PPL_MOE_ABOUT": "📝 All about",
   "PPL_MOE_SETTINGS_TAB_ICON": "Tab Icon",
+  "PPL_MOE_SETTINGS_TAB_ICON_DESCRIPTION": "Display an icon instead of text in the user modal tab list (to match themes that do this with the default tabs)",
   "PPL_MOE_ERROR": "Error",
-  "PPL_MOE_ERROR_404": "No profile found (this message shouldn't appear ideally)",
+  "PPL_MOE_ERROR_404": "No profile found :(",
   "PPL_MOE_ERROR_429": "Get rate limited lmao",
   "PPL_MOE_ERROR_UNKNOWN": "An unknown error occured. Please submit an issue on this plugins github & include the following information:"
 }
