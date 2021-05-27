@@ -14,7 +14,8 @@ I just thought it was a neat idea & the discord.bio plugin is broken rn
 - [x] i18n (able to load them, only english strings exist currently)
 - [x] Display the user's pronouns next to their name in messages (like the pronoundb plugin)
 - [x] Hide tab if the user doesn't have a ppl.moe profile
-- [ ] Add a "connection" for the ppl.moe profile so there's a link to the website  
+- [x] Add a "connection" for the ppl.moe profile so there's a link to the website
+- [ ] Move the creation of the profile tab to .jsx files (no this isn't feature creep stop looking at the commits to this file >:(  
 This will be the 1.0 release point!
 - [ ] Display the user's tagline
 - [ ] Display the user's badges (Admin, Beta tester, bug reporter [any others?])

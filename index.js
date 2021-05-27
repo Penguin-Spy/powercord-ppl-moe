@@ -74,6 +74,42 @@ class PplMoe extends Plugin {
       render: Settings
     })
 
+    // yoinked from the discord.bio plugin
+    powercord.api.connections.registerConnection({
+      type: 'ppl-moe',
+      name: 'ppl.moe',
+      color: '#3E1A24',
+      icon: {
+        color: 'https://cdn.discordapp.com/icons/267500017260953601/034b9f1489370e90e499f426d7ea7bd6.webp'
+      },
+      enabled: true,
+      fetchAccount: async (id) => {
+        try {
+          if (!id) {
+            ({
+              id
+            } = (await getModule(['getCurrentUser'])).getCurrentUser());
+          }
+
+          const profile = await this.fetchProfile(id);
+
+          return ({
+            type: 'ppl-moe',
+            id: profile.unique_url,
+            name: profile.name,
+            verified: true
+          });
+        } catch (e) {
+          //Just ignore the error, probably just 404
+        }
+      },
+      getPlatformUserUrl: (account) => {
+        return `https://ppl.moe/u/${encodeURIComponent(account.id)}`;
+      },
+      onDisconnect: () => void 0
+    });
+    // end of yoinkage
+
     const _this = this
     const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
