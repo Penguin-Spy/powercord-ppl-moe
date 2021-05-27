@@ -93,7 +93,11 @@ class PplMoe extends Plugin {
         })
       )
 
-      res.props.children[1].props.children.push(element)
+      try {
+        res.props.children[1].props.children.splice(3, 0, element)
+      } catch (e) {
+        res.props.children[1].props.children.push(element)
+      }
 
       return res
     })

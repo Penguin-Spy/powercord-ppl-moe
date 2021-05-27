@@ -39,16 +39,18 @@ function AboutBlock(props) {
       .replace(/'/gim, "&apos;")
       .replace(/</gim, "&lt;")
       .replace(/>/gim, "&gt;")
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')  // Format markdown (incomplete, does not include: tables, using underscores, strikethrough, seperators, code & codeblocks, & more!)
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
-      .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
-      .replace(/\*(.*)\*/gim, '<i>$1</i>')
+      .replace(/^### (.*$)/gim, "<h3>$1</h3>")  // Format markdown (incomplete, does not include: tables, using underscores, strikethrough, seperators, code & codeblocks, & more!)
+      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+      .replace(/^\> (.*$)/gim, "<blockquote>$1</blockquote>")
+      .replace(/\*\*(.*)\*\*/gim, "<b>$1</b>")
+      .replace(/\*(.*)\*/gim, "<i>$1</i>")
       .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
       .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank' class='ppl-moe-link'>$1</a>")
-      .replace(/  $/gim, '<br>')  // double space at end of lines is line break
-      .replace(/(^|[^\n])\n{2}(?!\n)/g, "$1<br><br>") // double newline, no spaces is line break, RegEx magic: https://stackoverflow.com/questions/18011260/regex-to-match-single-new-line-regex-to-match-double-new-line#answer-18012521
+      .replace(/  $/gim, "<br>")  // double space at end of lines is line break
+      .replace(/\\\n/gim, "<br>") // "\⤶" is line break
+      .replace(/\r\n\r\n/gim, "<br><br>") // double carridge return-line feed is paragraph break
+      .replace(/(^|[^\n])\n{2}(?!\n)/g, "$1<br><br>") // double newline, no spaces is paragraph break, RegEx magic: https://stackoverflow.com/questions/18011260/regex-to-match-single-new-line-regex-to-match-double-new-line#answer-18012521
 
     return (
       <div className={classes.pplMoeSection}>
