@@ -2,8 +2,9 @@
 ![Clone count badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fstatthegit.penguinspy.repl.co%2Fsheilds%2Fpowercord-ppl-moe)
 
 This is a powercord plugin that displays a user's ppl.moe profile as a new tab in the user's modal  
+It also shows their pronouns next to their name in messages (similar to & compatible with the PronounDB plugin).
 This plugin is not endorsed or in any way affiliated with ppl.moe or amy!  
-I just thought it was a neat idea & the discord.bio plugin is broken rn  
+I just thought it was a neat idea & the discord.bio plugin has been broken for quite a while
 
 # Planned features
 
@@ -15,7 +16,7 @@ I just thought it was a neat idea & the discord.bio plugin is broken rn
 - [x] Display the user's pronouns next to their name in messages (like the pronoundb plugin)
 - [x] Hide tab if the user doesn't have a ppl.moe profile
 - [x] Add a "connection" for the ppl.moe profile so there's a link to the website
-- [ ] Move the creation of the profile tab to .jsx files (no this isn't feature creep stop looking at the commits to this file >:(  
+- [x] Move the creation of the profile tab to .jsx files (no this isn't feature creep stop looking at the commits to this file >:(  
 This will be the 1.0 release point!
 - [ ] Display the user's tagline
 - [ ] Display the user's badges (Admin, Beta tester, bug reporter [any others?])
@@ -26,4 +27,4 @@ This will be the 1.0 release point!
 # License
 
 MIT License, Copyright Penguin_Spy 2021  
-this reposotory uses modified snippets of code from https://github.com/cyyynthia/pronoundb-powercord
+this reposotory uses modified snippets of code from https://github.com/cyyynthia/pronoundb-powercord and https://github.com/Ser-Ames/discord-bio

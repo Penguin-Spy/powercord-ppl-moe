@@ -9,6 +9,7 @@ const { loadPronouns } = require('./store/action.js')
 
 const Settings = require('./components/Settings.jsx')
 const Pronouns = require('./components/Pronouns.jsx')
+const Profile = require('./components/Profile.jsx')
 
 class PplMoe extends Plugin {
 
@@ -17,57 +18,9 @@ class PplMoe extends Plugin {
       .then(r => r.body)
   }
 
-  generateInfoDiv(info, key, classes) {
-    if (info[key] != "") { // If this field isn't empty
-      let keyElement
-
-      if (key == 'website') {  // If it's the website, make it a link to the text
-        keyElement = React.createElement('div', { className: classes.userInfoSectionText },
-          React.createElement('a', { className: classes.pplMoeLink, href: info[key], target: "_blank" }, `${info[key]}`)
-        )
-      } else {
-        keyElement = React.createElement('div', { className: classes.userInfoSectionText }, `${info[key]}`)
-      }
-
-      return React.createElement('div', {},
-        React.createElement('div', { className: classes.userInfoSectionHeader }, Messages[`PPL_MOE_${key.toUpperCase()}`]),
-        keyElement
-      )
-    }
-    return null
-  }
-
-  generateBioDiv(bioMarkdown, name, classes) {
-    if (bioMarkdown != "") { // If a bio has been written
-      const bioHTML = bioMarkdown
-        .replace(/"/gim, "&quot;")  // Sanitize HTML stuff (so you can't put XSS in your bio :P
-        .replace(/'/gim, "&apos;")
-        .replace(/</gim, "&lt;")
-        .replace(/>/gim, "&gt;")
-        .replace(/^### (.*$)/gim, '<h3>$1</h3>')  // Format markdown (incomplete, does not include: tables, using underscores, strikethrough, seperators, code & codeblocks, & more!)
-        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
-        .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
-        .replace(/\*(.*)\*/gim, '<i>$1</i>')
-        .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
-        .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2' target='_blank' class='ppl-moe-link'>$1</a>")
-        .replace(/  $/gim, '<br>')  // double space at end of lines is line break
-        .replace(/(^|[^\n])\n{2}(?!\n)/g, "$1<br><br>") // double newline, no spaces is line break, RegEx magic: https://stackoverflow.com/questions/18011260/regex-to-match-single-new-line-regex-to-match-double-new-line#answer-18012521
-
-      return React.createElement('div', {},
-        React.createElement('div', { className: classes.userInfoSectionHeader }, `${Messages.PPL_MOE_ABOUT} ${name}`),
-        React.createElement('div', { className: classes.userInfoSectionText, dangerouslySetInnerHTML: { __html: bioHTML } })  // whoooo dangerous inner html! (this is sanitized fully above, no user-written valid html can exist in this string)
-      )
-    }
-  }
-
   async startPlugin() {
     powercord.api.i18n.loadAllStrings(i18n);
     this.loadStylesheet('style.css')
-    //if(powercord.styleManager.themes.has("Comfy-git-clone")) {
-    //this.loadStylesheet('comfy.css')
-    //}
     powercord.api.settings.registerSettings('ppl-moe', {
       category: this.entityID,
       label: 'ppl.moe',
@@ -131,11 +84,8 @@ class PplMoe extends Plugin {
 
       const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)
 
-      const element = React.createElement(
-        'span',
-        {
-          className: classes.pplMoePronouns + " " + (hidePronounDB ? classes.pplMoePronounsHidePronounDB : "")
-        },
+      const element = React.createElement('span',
+        { className: classes.pplMoePronouns + " " + (hidePronounDB ? classes.pplMoePronounsHidePronounDB : "") },
         React.createElement(Pronouns, {
           userId: props.message.author.id,
           region: 'chat',
@@ -199,6 +149,7 @@ class PplMoe extends Plugin {
       const body = res.props.children.props.children[1]
       body.props.children = []
 
+      // this isn't jsx because i couldn't be bothered to re-write it :)
       if (this.state.ppl_moe.error) {
         body.props.children.push(
           React.createElement('div', { className: classes.infoScroller, dir: "ltr", style: { 'overflow': "hidden scroll", 'padding-right': "12px" } },
@@ -209,23 +160,10 @@ class PplMoe extends Plugin {
           )
         )
       } else {
-
-        // ik it's ugly, but it works so :)
-        body.props.children.push(
-          React.createElement('div', { className: classes.infoScroller, dir: "ltr", style: { 'overflow': "hidden scroll", 'padding-right': "12px" } },
-            React.createElement('div', { className: classes.pplMoeSection }, [
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'gender', classes),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'pronouns', classes),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'location', classes),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'language', classes),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'website', classes),
-              _this.generateInfoDiv(this.state.ppl_moe.info, 'birthday', classes)
-            ]),
-            React.createElement('div', { className: classes.pplMoeSection }, [
-              _this.generateBioDiv(this.state.ppl_moe.bio, this.state.ppl_moe.name, classes),
-            ])
-          )
-        )
+        body.props.children.push(React.createElement(Profile, {
+          classes: classes,
+          ppl_moe: this.state.ppl_moe
+        }))
       }
 
       return res
@@ -235,15 +173,12 @@ class PplMoe extends Plugin {
 
   pluginWillUnload() {
     uninject('ppl-moe-messages-header')
-    //uninject('ppl-moe-messages-header2')
-    //uninject('ppl-moe-messages-header3')
     uninject('ppl-moe-user-load')
     uninject('ppl-moe-user-tab-bar')
     uninject('ppl-moe-user-body')
   }
 
   /* The following code is modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
-
   async _getMessageHeader() {
     const d = (m) => {
       const def = m.__powercordOriginal_default ?? m.default
@@ -264,7 +199,6 @@ class PplMoe extends Plugin {
   _extractFromFlux(FluxContainer) {
     return FluxContainer.prototype.render.call({ memoizedGetStateFromStores: () => null }).type
   }
-
   /* End of code from pronoundb-powercord */
 
 }
