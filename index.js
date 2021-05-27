@@ -75,21 +75,21 @@ class PplMoe extends Plugin {
       pplMoeSection: "ppl-moe-section",
       pplMoeLink: "ppl-moe-link",
       pplMoePronouns: "ppl-moe-pronouns",
-      pplMoeTabIcon: "ppl-moe-tab-icon",
-      pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb"
+      pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb",
+      pplMoeTabIcon: "ppl-moe-tab-icon"
     }
 
     inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
       if (!props.message.author.id || props.message.author.bot) return res
 
+      if (!powercord.api.settings.store.getSetting("powercord-ppl-moe", "showPronouns", true)) return res
+
       const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)
 
       const element = React.createElement('span',
-        { className: classes.pplMoePronouns + " " + (hidePronounDB ? classes.pplMoePronounsHidePronounDB : "") },
+        { className: classes.pplMoePronouns + (hidePronounDB ? " " + classes.pplMoePronounsHidePronounDB : "") },
         React.createElement(Pronouns, {
-          userId: props.message.author.id,
-          region: 'chat',
-          prefix: ' • ',
+          userId: props.message.author.id
         })
       )
 
@@ -122,16 +122,16 @@ class PplMoe extends Plugin {
     inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
       const { user } = this.props
 
-      // Do not add a tab if there is no tab bar, no user, or the user's a bot
+      // Do not add a tab if there is no tab bar, no user, the user's a bot, or they don't have a ppl.moe profile
       if (!res || !user || user.bot) return res
       if (store.getPronouns(user.id) == undefined) return res
 
+      // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
       const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
-      //powercord.api.settings.store.getSetting("powercord-ppl-moe", "tabIcon")
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
-        className: classes.tabBarItem + " " + (tabIcon ? classes.pplMoeTabIcon : ""),
+        className: classes.tabBarItem + (tabIcon ? " " + classes.pplMoeTabIcon : ""),
         id: "PPL_MOE"
       }, Messages.PPL_MOE_TAB)
 
@@ -178,7 +178,7 @@ class PplMoe extends Plugin {
     uninject('ppl-moe-user-body')
   }
 
-  /* The following code is modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
+  /* The following code is slightly modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
   async _getMessageHeader() {
     const d = (m) => {
       const def = m.__powercordOriginal_default ?? m.default

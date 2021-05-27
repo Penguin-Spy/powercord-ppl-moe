@@ -7,6 +7,8 @@
   "PPL_MOE_WEBSITE": "🌐 Website",
   "PPL_MOE_BIRTHDAY": "🎂 Birthday",
   "PPL_MOE_ABOUT": "📝 All about",
+  "PPL_MOE_SETTINGS_SHOW_PRONOUNS": "Show Pronouns",
+  "PPL_MOE_SETTINGS_SHOW_PRONOUNS_DESCRIPTION": "Show ppl.moe pronouns at the top of the user's message",
   "PPL_MOE_SETTINGS_HIDE_PRONOUNDB": "Hide PronounDB",
   "PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION": "Hide PronounDB's pronouns if there are ppl.moe ones present",
   "PPL_MOE_ERROR": "Error",

@@ -17,8 +17,6 @@ async function doLoadPronoun(id) {
   })
 }
 
-
-
 /* The following code is modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
 let timer = null
 let buffer = []
