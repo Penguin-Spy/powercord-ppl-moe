@@ -172,6 +172,9 @@ class PplMoe extends Plugin {
   }
 
   pluginWillUnload() {
+    powercord.api.connections.unregisterConnection('ppl-moe');
+    powercord.api.settings.unregisterSettings('ppl-moe');
+
     uninject('ppl-moe-messages-header')
     uninject('ppl-moe-user-load')
     uninject('ppl-moe-user-tab-bar')
