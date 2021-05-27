@@ -12,5 +12,6 @@
   "PPL_MOE_ERROR": "Error",
   "PPL_MOE_ERROR_404": "No profile found :(",
   "PPL_MOE_ERROR_429": "Get rate limited lmao",
+  "PPL_MOE_ERROR_NO_USER_OR_BOT": "Huh. You really shouldn't be seeing this message. Idk what exactly causes this scenario, but i'd recommend closing & re-opening the user modal and see if that helps.",
   "PPL_MOE_ERROR_UNKNOWN": "An unknown error occured. Please submit an issue on this plugins github & include the following information:"
 }

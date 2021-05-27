@@ -27,7 +27,7 @@
 
 const { React, Flux } = require('powercord/webpack')
 const { loadPronouns } = require('../store/action.js')
-const store = require('../store/store.js')
+const { getStore } = require('../store/store.js')
 
 function Pronouns({ userId, prefix, display, pronouns, hidePronounDB }) {
     React.useEffect(() => void loadPronouns(userId), [userId])
@@ -35,6 +35,8 @@ function Pronouns({ userId, prefix, display, pronouns, hidePronounDB }) {
     if (!pronouns || !display) return null
     return React.createElement(React.Fragment, {}, prefix ?? null, pronouns)
 }
+
+let store = getStore()
 
 module.exports = Flux.connectStores(
     [store, powercord.api.settings.store],

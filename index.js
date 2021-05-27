@@ -4,13 +4,15 @@ const { React, getModule, getAllModules, getModuleByDisplayName, i18n: { Message
 const { TabBar } = require('powercord/components')
 const { get } = require('powercord/http')
 const i18n = require('./i18n');
+const { getStore } = require('./store/store.js')
+const { loadPronouns } = require('./store/action.js')
 
 const Settings = require('./components/Settings.jsx')
 const Pronouns = require('./components/Pronouns.jsx')
 
 class PplMoe extends Plugin {
 
-  async fetchAbout(id) {
+  async fetchProfile(id) {
     return await get(`https://ppl.moe/api/user/discord/${id}`)
       .then(r => r.body)
   }
@@ -75,6 +77,7 @@ class PplMoe extends Plugin {
     const _this = this
     const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
+    const store = getStore()
     const classes = {
       tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
       infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
@@ -111,10 +114,15 @@ class PplMoe extends Plugin {
 
     inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {  // Apparently this being async can sometimes not work, but it has always worked in my testing & the discord.bio plugin does it too.
       const { user } = this.props
-      if (!user || user.bot) return
+      if (!user || user.bot) {
+        this.setState({ ppl_moe: { error: 'NO_USER_OR_BOT' } })
+        return res
+      }
+
+      loadPronouns(user.id) // Make sure this user's pronouns are loaded, that way can check if they have a profile during the tab-bar inject
 
       try {
-        const about = await _this.fetchAbout(user.id)
+        const about = await _this.fetchProfile(user.id)
         this.setState({ ppl_moe: about })
       } catch (e) {
         this.setState({
@@ -127,11 +135,13 @@ class PplMoe extends Plugin {
 
     inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
       const { user } = this.props
-      const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
-      //powercord.api.settings.store.getSetting("powercord-ppl-moe", "tabIcon")
 
       // Do not add a tab if there is no tab bar, no user, or the user's a bot
       if (!res || !user || user.bot) return res
+      if (store.getPronouns(user.id) == undefined) return res
+
+      const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
+      //powercord.api.settings.store.getSetting("powercord-ppl-moe", "tabIcon")
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
@@ -181,7 +191,6 @@ class PplMoe extends Plugin {
           )
         )
       }
-      //console.log(this.state.ppl_moe)
 
       return res
     })

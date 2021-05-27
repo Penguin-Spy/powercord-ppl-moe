@@ -3,8 +3,6 @@ const { FluxDispatcher } = require('powercord/webpack')
 const { shouldFetchPronouns } = require('./store.js')
 
 async function doLoadPronoun(id) {
-  console.log(`ppl-moe doLoadPronouns(${id})`)
-
   try {
     profile = await get(`https://ppl.moe/api/user/discord/${id}`)
       .then(r => r.body)

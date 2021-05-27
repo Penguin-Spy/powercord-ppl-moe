@@ -47,7 +47,7 @@ class PronounStore extends Flux.Store {
   }
 }
 
-module.exports = new PronounStore(FluxDispatcher, {
+store = new PronounStore(FluxDispatcher, {
   /* Start of code modified by Penguin_Spy */
   ['PPL_MOE_PROFILE_LOADED']: ({ id, loadedPronouns }) => {
     pronouns[id] = loadedPronouns
@@ -55,3 +55,15 @@ module.exports = new PronounStore(FluxDispatcher, {
   }
   /* end of code modified by Penguin_Spy */
 })
+
+module.exports = {
+  getStore: () => {
+    return store;
+  },
+  getPronouns(id) {
+    return store.getPronouns(id)
+  },
+  shouldFetchPronouns: (id) => {
+    return store.shouldFetchPronouns(id)
+  }
+}
