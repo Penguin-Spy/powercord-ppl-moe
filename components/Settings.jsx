@@ -6,37 +6,11 @@ module.exports = class PplMoeSettings extends React.Component {
     return (
       <div className="ppl-moe-settings">
         <SwitchItem
-          note={Messages.PPL_MOE_SETTINGS_TAB_ICON_DESCRIPTION}
-          value={this.props.getSetting('tabIcon', false)}
-          onChange={(/*v*/) => {
-            this.props.toggleSetting('tabIcon', false)
-            //console.log(this.props)
-            /*try {
-              if (v) {
-                const styles = powercord.pluginManager.plugins.get("powercord-ppl-moe").styles
-                Object.keys(styles).forEach(key => {
-                  if (styles[key].compiler.file.includes("comfy")) {
-                    console.log("ppl-moe-settings v=true")
-                    console.log(styles[key])
-                  }
-                })
-              }
-              else {
-                const styles = powercord.pluginManager.plugins.get("powercord-ppl-moe").styles
-                Object.keys(styles).forEach(key => {
-                  if (styles[key].compiler.file.includes("comfy")) {
-                    console.log("ppl-moe-settings v=false")
-                    console.log(styles[key])
-                  }
-                })
-              }
-            } catch (e) {
-              console.log("[powercord-ppl-moe] oopsy whoopsy, we made a fu\");")
-              console.log(e)
-            }*/
-          }}
+          note={Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION}
+          value={this.props.getSetting('hidePronounDB', true)}
+          onChange={() => { this.props.toggleSetting('hidePronounDB', true) }}
         >
-          {Messages.PPL_MOE_SETTINGS_TAB_ICON}
+          {Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB}
         </SwitchItem>
       </div>
     )

@@ -9,12 +9,13 @@ I just thought it was a neat idea & the discord.bio plugin is broken rn
 
 - [x] Get it working at all
 - [x] Don't use hard-coded classes that will break when Discord changes stuff
-- [x] Setting for tab icon (for Comfy theme + others). Ideally this would auto-enable/disable but idk how
+- [x] Icon for the tab instead of text when using the Comfy theme
 - [x] Don't commit copyright infringement
 - [X] i18n (able to load them, only english strings exist currently)
-- [ ] Display the user's pronouns next to their name in messages (like the pronoundb plugin)
+- [x] Display the user's pronouns next to their name in messages (like the pronoundb plugin)
 - [ ] Add a "connection" for the ppl.moe profile so there's a link to the website
 - [ ] Hide tab if the user doesn't have a ppl.moe profile
+This will be the 1.0 release point
 - [ ] Display the user's badges (Admin, Beta tester, bug reporter [any others?])
 - [ ] Display the user's tagline
 - [ ] Full markdown formatting (tables, using underscores, strikethrough, seperators, code & codeblocks, and more!)

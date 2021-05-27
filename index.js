@@ -6,6 +6,7 @@ const { get } = require('powercord/http')
 const i18n = require('./i18n');
 
 const Settings = require('./components/Settings.jsx')
+const Pronouns = require('./components/Pronouns.jsx')
 
 class PplMoe extends Plugin {
 
@@ -72,7 +73,7 @@ class PplMoe extends Plugin {
     })
 
     const _this = this
-    //const MessageHeader = await this._getMessageHeader()
+    const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
     const classes = {
       tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
@@ -81,25 +82,32 @@ class PplMoe extends Plugin {
       userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
       pplMoeSection: "ppl-moe-section",
       pplMoeLink: "ppl-moe-link",
+      pplMoePronouns: "ppl-moe-pronouns",
       pplMoeTabIcon: "ppl-moe-tab-icon",
+      pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb"
     }
 
-    // TODO (unmodified from https://github.com/cyyynthia/pronoundb-powercord, but also unused, just here as a starting point when i get around to writing this)
-    /*inject('ppl-moe-messages-header', MessageHeader, 'default', function ([ props ], res) {
-      res.props.children[1].props.children.push(
-        React.createElement(
-          'span',
-          { style: { color: 'var(--text-muted)', fontSize: '.9rem', marginRight: props.compact ? '.6rem' : '' } },
-          React.createElement(Pronouns, {
-            userId: props.message.author.id,
-            region: props.message.id === 'pronoundb-fake' ? 'settings' : 'chat',
-            prefix: ' • '
-          })
-        )
+    inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
+      if (!props.message.author.id || props.message.author.bot) return res
+
+      const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)
+
+      const element = React.createElement(
+        'span',
+        {
+          className: classes.pplMoePronouns + " " + (hidePronounDB ? classes.pplMoePronounsHidePronounDB : "")
+        },
+        React.createElement(Pronouns, {
+          userId: props.message.author.id,
+          region: 'chat',
+          prefix: ' • ',
+        })
       )
 
+      res.props.children[1].props.children.push(element)
+
       return res
-    })*/
+    })
 
     inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {  // Apparently this being async can sometimes not work, but it has always worked in my testing & the discord.bio plugin does it too.
       const { user } = this.props
@@ -119,14 +127,15 @@ class PplMoe extends Plugin {
 
     inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
       const { user } = this.props
-      const { settings } = powercord.pluginManager.plugins.get("powercord-ppl-moe")
+      const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
+      //powercord.api.settings.store.getSetting("powercord-ppl-moe", "tabIcon")
 
       // Do not add a tab if there is no tab bar, no user, or the user's a bot
       if (!res || !user || user.bot) return res
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
-        className: classes.tabBarItem + " " + (settings.get('tabIcon') ? classes.pplMoeTabIcon : ""),
+        className: classes.tabBarItem + " " + (tabIcon ? classes.pplMoeTabIcon : ""),
         id: "PPL_MOE"
       }, Messages.PPL_MOE_TAB)
 
@@ -180,7 +189,9 @@ class PplMoe extends Plugin {
   }
 
   pluginWillUnload() {
-    //uninject('ppl-moe-messages-header')
+    uninject('ppl-moe-messages-header')
+    //uninject('ppl-moe-messages-header2')
+    //uninject('ppl-moe-messages-header3')
     uninject('ppl-moe-user-load')
     uninject('ppl-moe-user-tab-bar')
     uninject('ppl-moe-user-body')
@@ -188,13 +199,13 @@ class PplMoe extends Plugin {
 
   /* The following code is modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
 
-  /*async _getMessageHeader () {
+  async _getMessageHeader() {
     const d = (m) => {
       const def = m.__powercordOriginal_default ?? m.default
       return typeof def === 'function' ? def : null
     }
-    return getModule((m) => d(m)?.toString().includes('headerText'))
-  }*/
+    return getModule((m) => d(m)?.toString().includes('showTimestampOnHover'))
+  }
 
   async _getUserProfile() {
     const VeryVeryDecoratedUserProfile = await getModuleByDisplayName('UserProfile')

@@ -1,7 +1,7 @@
 {
   "name": "ppl.moe",
-  "version": "0.1.1",
-  "description": "(ideally) shows ppl.moe info in a new user modal tab.",
+  "version": "0.1.3",
+  "description": "Shows a user's ppl.moe profile in a new tab in their user modal.",
   "author": "Penguin_Spy",
   "permissions": "ext_api",
   "license": "MIT"

@@ -12,6 +12,17 @@
 .ppl-moe-link:hover {
   text-decoration: underline;
 }
+.ppl-moe-pronouns {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Hide pronoundb pronouns if after the ppl.moe ones */
+.ppl-moe-pronouns-hide-pronoundb + span{
+  display: none;
+}
+
 
 /* ppl.moe tab icon stuff for Comfy theme */
 .tabBarContainer-1s1u-z:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"] {
