@@ -29,11 +29,11 @@ class PplMoe extends Plugin {
 
     // yoinked from the discord.bio plugin
     powercord.api.connections.registerConnection({
-      type: 'ppl-moe',
-      name: 'ppl.moe',
-      color: '#3E1A24',
+      type: "ppl-moe",
+      name: "ppl.moe",
+      color: "#DB325C",
       icon: {
-        color: 'https://cdn.discordapp.com/icons/267500017260953601/034b9f1489370e90e499f426d7ea7bd6.webp'
+        color: "https://i.imgur.com/KqbpO1x.png"
       },
       enabled: true,
       fetchAccount: async (id) => {
@@ -41,13 +41,13 @@ class PplMoe extends Plugin {
           if (!id) {
             ({
               id
-            } = (await getModule(['getCurrentUser'])).getCurrentUser());
+            } = (await getModule(["getCurrentUser"])).getCurrentUser());
           }
 
           const profile = await this.fetchProfile(id);
 
           return ({
-            type: 'ppl-moe',
+            type: "ppl-moe",
             id: profile.unique_url,
             name: profile.name,
             verified: true
@@ -66,7 +66,7 @@ class PplMoe extends Plugin {
     const _this = this
     const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
-    const store = getStore()
+    const pplMoeStore = getStore()
     const classes = {
       tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
       infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
@@ -128,7 +128,7 @@ class PplMoe extends Plugin {
 
       // Do not add a tab if there is no tab bar, no user, the user's a bot, or they don't have a ppl.moe profile
       if (!res || !user || user.bot) return res
-      if (store.getPronouns(user.id) == undefined) return res
+      if (pplMoeStore.getPronouns(user.id) == undefined) return res
 
       // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
       const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")

@@ -15,7 +15,8 @@ It also shows their pronouns next to their name in messages (similar to & compat
 
 # Planned features
 - [ ] Display the user's tagline
-- [ ] Display the user's badges (Admin, Beta tester, bug reporter [any others?])
+- [ ] Display the user's badges (Admin, Indev tester, Bug reporter)
+- [ ] Use the store for all profile info, to reduce redundant API calls
 - [ ] Full markdown formatting (tables, using underscores, strikethrough, seperators, code & codeblocks, and more!)
 - [ ] Change layout of modal a bit (move connections to their own tab, put notes outside of a tab, have our tab be 1st, obviously settings for this)?
 - [ ] Display the user's latest post? idk but if people want it i'll add it
