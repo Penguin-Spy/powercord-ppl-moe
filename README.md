@@ -13,13 +13,16 @@ It also shows their pronouns next to their name in messages (similar to & compat
 - Automatically hides PronounDB's pronouns if there are ppl.moe ones to show
 - Settings for the above two features
 
-# Planned features
+# Planned features (and notes i guess)
+- [x] Use the cache for all profile info (in connections), to reduce redundant API calls (semi-successful, may revisit)
 - [ ] Display the user's tagline
 - [ ] Display the user's badges (Admin, Indev tester, Bug reporter)
-- [ ] Use the store for all profile info, to reduce redundant API calls
-- [ ] Full markdown formatting (tables, using underscores, strikethrough, seperators, code & codeblocks, and more!)
+- [ ] i forgot to format the birthday date string lol
+- [ ] fix website overrunning space for it (does this happen with others/don't do when there's no next block of info)
+- [ ] Full markdown formatting (tables, using underscores, strikethrough, seperators, code & codeblocks, lists, and more!)
 - [ ] Change layout of modal a bit (move connections to their own tab, put notes outside of a tab, have our tab be 1st, obviously settings for this)?
 - [ ] Display the user's latest post? idk but if people want it i'll add it
+- [ ] Hide about/tagline if it's unset/the default string
 
 # License
 MIT License, Copyright Penguin_Spy 2021  

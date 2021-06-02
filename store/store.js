@@ -27,30 +27,31 @@
 
 const { Flux, FluxDispatcher } = require('powercord/webpack')
 
-let pronouns = {}
+let profiles = {}
 let timestamps = {}
 
-class PronounStore extends Flux.Store {
+class PplMoeStore extends Flux.Store {
+  //Note: not the exported fuction, left in because idk how Flux works but it might need it
   getStore() {
     return {
-      pronouns,
+      profiles,
       timestamps
     }
   }
 
-  getPronouns(id) {
-    return pronouns[id] ?? null
+  getProfile(id) {
+    return profiles[id] ?? null
   }
 
-  shouldFetchPronouns(id) {
-    return !(id in pronouns) // || timestamps[id] < Date.now()
+  shouldFetchProfile(id) {    // Profile caching persists until a reload, probably want to leave this commented to reduce API spam
+    return !(id in profiles)  // || timestamps[id] < Date.now()
   }
 }
 
-store = new PronounStore(FluxDispatcher, {
+pplMoeStore = new PplMoeStore(FluxDispatcher, {
   /* Start of code modified by Penguin_Spy */
-  ['PPL_MOE_PROFILE_LOADED']: ({ id, loadedPronouns }) => {
-    pronouns[id] = loadedPronouns
+  ['PPL_MOE_PROFILE_LOADED']: ({ id, loadedProfile }) => {
+    profiles[id] = loadedProfile
     timestamps[id] = Date.now() + (30 * 60e3) // 30 minutes
   }
   /* end of code modified by Penguin_Spy */
@@ -58,12 +59,12 @@ store = new PronounStore(FluxDispatcher, {
 
 module.exports = {
   getStore: () => {
-    return store;
+    return pplMoeStore
   },
-  getPronouns(id) {
-    return store.getPronouns(id)
+  getProfile(id) {
+    return pplMoeStore.getProfile(id)
   },
-  shouldFetchPronouns: (id) => {
-    return store.shouldFetchPronouns(id)
+  shouldFetchProfile: (id) => {
+    return pplMoeStore.shouldFetchProfile(id)
   }
 }

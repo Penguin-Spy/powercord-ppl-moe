@@ -26,21 +26,21 @@
  */
 
 const { React, Flux } = require('powercord/webpack')
-const { loadPronouns } = require('../store/action.js')
+const { loadProfile } = require('../store/action.js')
 const { getStore } = require('../store/store.js')
 
-function Pronouns({ userId, pronouns }) {
-    React.useEffect(() => void loadPronouns(userId), [userId])
+function Pronouns({ userId, profile }) {
+  React.useEffect(() => void loadProfile(userId), [userId])
 
-    if (!pronouns || pronouns == "") return null
-    return React.createElement(React.Fragment, {}, ' • ', pronouns)
+  if (!profile || profile == 0 || profile.info.pronouns == "") return null
+  return React.createElement(React.Fragment, {}, ' • ', profile.info.pronouns)
 }
 
-let store = getStore()
+let pplMoeStore = getStore()
 
 module.exports = Flux.connectStores(
-    [store, powercord.api.settings.store],
-    ({ userId }) => ({
-        pronouns: store.getPronouns(userId)
-    })
+  [pplMoeStore, powercord.api.settings.store],
+  ({ userId }) => ({
+    profile: pplMoeStore.getProfile(userId)
+  })
 )(React.memo(Pronouns))

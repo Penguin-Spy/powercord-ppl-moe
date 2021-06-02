@@ -1,4 +1,4 @@
-const { React, i18n: { Messages } } = require('powercord/webpack');
+const { React, i18n: { Messages } } = require('powercord/webpack')
 
 class InfoBlock extends React.PureComponent {
   render() {
@@ -66,18 +66,18 @@ function AboutBlock(props) {
 
 module.exports = class PplMoeProfile extends React.Component {
   render() {
-    const { classes, ppl_moe } = this.props;
+    const { classes, profile } = this.props;
     return (
       <div className={classes.infoScroller} dir="ltr" style={{ 'overflow': "hidden scroll", 'padding-right': "12px" }}>
         <div className={classes.pplMoeSection}>
-          <InfoBlock info={ppl_moe.info} keyName='gender' classes={classes} />
-          <InfoBlock info={ppl_moe.info} keyName='pronouns' classes={classes} />
-          <InfoBlock info={ppl_moe.info} keyName='location' classes={classes} />
-          <InfoBlock info={ppl_moe.info} keyName='language' classes={classes} />
-          <InfoBlock info={ppl_moe.info} keyName='website' classes={classes} />
-          <InfoBlock info={ppl_moe.info} keyName='birthday' classes={classes} />
+          <InfoBlock info={profile.info} keyName='gender' classes={classes} />
+          <InfoBlock info={profile.info} keyName='pronouns' classes={classes} />
+          <InfoBlock info={profile.info} keyName='location' classes={classes} />
+          <InfoBlock info={profile.info} keyName='language' classes={classes} />
+          <InfoBlock info={profile.info} keyName='website' classes={classes} />
+          <InfoBlock info={profile.info} keyName='birthday' classes={classes} />
         </div>
-        <AboutBlock bioMarkdown={ppl_moe.bio} name={ppl_moe.name} classes={classes} />
+        <AboutBlock bioMarkdown={profile.bio} name={profile.name} classes={classes} />
       </div>
     )
   }

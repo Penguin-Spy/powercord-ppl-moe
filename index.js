@@ -5,18 +5,13 @@ const { TabBar } = require('powercord/components')
 const { get } = require('powercord/http')
 const i18n = require('./i18n');
 const { getStore } = require('./store/store.js')
-const { loadPronouns } = require('./store/action.js')
+const { loadProfile, doLoadProfile } = require('./store/action.js')
 
 const Settings = require('./components/Settings.jsx')
 const Pronouns = require('./components/Pronouns.jsx')
 const Profile = require('./components/Profile.jsx')
 
 class PplMoe extends Plugin {
-
-  async fetchProfile(id) {
-    return await get(`https://ppl.moe/api/user/discord/${id}`)
-      .then(r => r.body)
-  }
 
   async startPlugin() {
     powercord.api.i18n.loadAllStrings(i18n);
@@ -44,7 +39,14 @@ class PplMoe extends Plugin {
             } = (await getModule(["getCurrentUser"])).getCurrentUser());
           }
 
-          const profile = await this.fetchProfile(id);
+          let profile
+          if (pplMoeStore.shouldFetchProfile(id)) {
+            profile = await doLoadProfile(id)
+          } else {
+            profile = pplMoeStore.getProfile(id)
+          }
+
+          if (!profile) return
 
           return ({
             type: "ppl-moe",
@@ -63,7 +65,6 @@ class PplMoe extends Plugin {
     });
     // end of yoinkage
 
-    const _this = this
     const MessageHeader = await this._getMessageHeader()
     const UserProfile = await this._getUserProfile()
     const pplMoeStore = getStore()
@@ -81,11 +82,9 @@ class PplMoe extends Plugin {
 
     inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
       if (!props.message.author.id || props.message.author.bot) return res
-
       if (!powercord.api.settings.store.getSetting("powercord-ppl-moe", "showPronouns", true)) return res
 
       const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)
-
       const element = React.createElement('span',
         { className: classes.pplMoePronouns + (hidePronounDB ? " " + classes.pplMoePronounsHidePronounDB : "") },
         React.createElement(Pronouns, {
@@ -93,9 +92,9 @@ class PplMoe extends Plugin {
         })
       )
 
-      try {
+      try { // Attempt to put our span before PronounDB's (so that the CSS can apply)
         res.props.children[1].props.children.splice(3, 0, element)
-      } catch (e) {
+      } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
         res.props.children[1].props.children.push(element)
       }
 
@@ -104,35 +103,33 @@ class PplMoe extends Plugin {
 
     inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {  // Apparently this being async can sometimes not work, but it has always worked in my testing & the discord.bio plugin does it too.
       const { user } = this.props
-      if (!user || user.bot) {
-        this.setState({ ppl_moe: { error: 'NO_USER_OR_BOT' } })
-        return res
-      }
+      if (!user || user.bot) return res
 
-      loadPronouns(user.id) // Make sure this user's pronouns are loaded, that way can check if they have a profile during the tab-bar inject
+      loadProfile(user.id) // Make sure this user's profile is loaded, that way can check if they have a profile during the tab-bar inject
 
-      try {
-        const about = await _this.fetchProfile(user.id)
-        this.setState({ ppl_moe: about })
+      /*try {
+        const profile = pplMoeStore.getProfile(user.id)
+        this.setState({ ppl_moe: { profile: profile } })
       } catch (e) {
         this.setState({
           ppl_moe: {
             error: e.statusCode ? e.statusCode : 'UNKNOWN'  // Directly corresponds to a translation key
           }
         })
-      }
+      }*/
     })
 
     inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
       const { user } = this.props
+      if (!res || !user || user.bot) return res // Do not add a tab if there is no tab bar, no user, or the user's a bot
 
-      // Do not add a tab if there is no tab bar, no user, the user's a bot, or they don't have a ppl.moe profile
-      if (!res || !user || user.bot) return res
-      if (pplMoeStore.getPronouns(user.id) == undefined) return res
+      // the user's profile has already been loaded/requested to load by the "user-load" inject
+      const profile = pplMoeStore.getProfile(user.id)
+      if (!profile || profile == 0) return res
+      // if it hasn't loaded yet or the user has no profile, just return
 
       // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
       const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
-
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
         className: classes.tabBarItem + (tabIcon ? " " + classes.pplMoeTabIcon : ""),
@@ -153,22 +150,14 @@ class PplMoe extends Plugin {
       const body = res.props.children.props.children[1]
       body.props.children = []
 
-      // this isn't jsx because i couldn't be bothered to re-write it :)
-      if (this.state.ppl_moe.error) {
-        body.props.children.push(
-          React.createElement('div', { className: classes.infoScroller, dir: "ltr", style: { 'overflow': "hidden scroll", 'padding-right': "12px" } },
-            React.createElement('div', { className: classes.pplMoeSection },
-              React.createElement('div', { className: classes.userInfoSectionHeader }, `${Messages.PPL_MOE_ERROR}: ${this.state.ppl_moe.error}`), // This section is confusing but basically it translates "Error: 404"
-              React.createElement('div', { className: classes.userInfoSectionText }, Messages[`PPL_MOE_ERROR_${this.state.ppl_moe.error}`])       // And then this part translates "No profile found"
-            )
-          )
-        )
-      } else {
-        body.props.children.push(React.createElement(Profile, {
-          classes: classes,
-          ppl_moe: this.state.ppl_moe
-        }))
-      }
+      const profile = pplMoeStore.getProfile(this.props.user.id)
+      if (!profile || profile == 0) return res
+      // if it hasn't loaded yet or the user has no profile, just return
+
+      body.props.children.push(React.createElement(Profile, {
+        classes: classes,
+        profile: profile
+      }))
 
       return res
     })
