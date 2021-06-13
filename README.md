@@ -1,3 +1,6 @@
+# YES ITS BROKEN RN
+i don't know what i'm doing and discord 🦆ed up my code when they updated the User Modals. i'm trying to fix it, see the thonk branch for my attempt
+
 # Powercord ppl.moe
 ![Clone count badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fstatthegit.penguinspy.repl.co%2Fsheilds%2Fpowercord-ppl-moe)
 
