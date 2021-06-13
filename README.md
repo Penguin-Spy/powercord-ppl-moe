@@ -15,8 +15,8 @@ It also shows their pronouns next to their name in messages (similar to & compat
 
 # Planned features (and notes i guess)
 - [x] Use the cache for all profile info (in connections), to reduce redundant API calls (semi-successful, may revisit)
-- [ ] Display the user's tagline
-- [ ] Display the user's badges (Admin, Indev tester, Bug reporter)
+- [x] Display the user's tagline
+- [x] Display the user's badges (Admin, Indev tester, Bug reporter)
 - [ ] i forgot to format the birthday date string lol
 - [ ] fix website overrunning space for it (does this happen with others/don't do when there's no next block of info)
 - [ ] Full markdown formatting (tables, using underscores, strikethrough, seperators, code & codeblocks, lists, and more!)
