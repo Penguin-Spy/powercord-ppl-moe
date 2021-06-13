@@ -1,11 +1,20 @@
-.ppl-moe-section:first-child {
+.ppl-moe-section-header {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-template-columns: repeat(2,minmax(0,1fr));
   grid-column-gap: 16px;
   grid-row-gap: 12px;
   padding: 20px 0;
 }
-.ppl-moe-section + .ppl-moe-section {
+.ppl-moe-section-info {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-column-gap: 16px;
+  grid-row-gap: 12px;
+  padding: 0 0 20px;
+}
+.ppl-moe-section-bio {
+  display: grid;
+  grid-template-columns: 2 1;
   border-top: 1px solid var(--background-modifier-accent);
   padding: 20px 0;
 }
