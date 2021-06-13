@@ -66,14 +66,23 @@ class PplMoe extends Plugin {
     // end of yoinkage
 
     const MessageHeader = await this._getMessageHeader()
-    const UserProfile = await this._getUserProfile()
+    //const UserProfile = await this._getUserProfile()
+    const UserProfile = (await getModule((m) => m.default?.displayName == 'UserProfileModal'))
+    console.log(UserProfile)
+    var UserProfileBody = null; // man i love react/electron/discord/me not knowing wtf i'm doing (probably that last one)
+    //const UserProfile = (await getModule((m) => m.default?.displayName == 'UserProfileModal')).default
+    //const UserProfile = (await getModule((m) => m.default?.displayName == 'UserProfileModal'))
+    const TabBar = await getModuleByDisplayName("TabBar")
+
     const pplMoeStore = getStore()
     const classes = {
       tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
       infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
       userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader,
       userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
-      pplMoeSection: "ppl-moe-section",
+      pplMoeSectionHeader: "ppl-moe-section-header",
+      pplMoeSectionInfo: "ppl-moe-section-info",
+      pplMoeSectionBio: "ppl-moe-section-bio",
       pplMoeLink: "ppl-moe-link",
       pplMoePronouns: "ppl-moe-pronouns",
       pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb",
@@ -101,11 +110,13 @@ class PplMoe extends Plugin {
       return res
     })
 
-    inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', async function (_, res) {  // Apparently this being async can sometimes not work, but it has always worked in my testing & the discord.bio plugin does it too.
-      const { user } = this.props
-      if (!user || user.bot) return res
+    /*inject('ppl-moe-user-load', UserProfile.prototype, 'componentDidMount', function (_, res) {
+      console.log("ppl-moe-user-load")
+      console.log(res)
+      //const { user } = this.props
+      //if (!user || user.bot) return res
 
-      loadProfile(user.id) // Make sure this user's profile is loaded, that way can check if they have a profile during the tab-bar inject
+      //loadProfile(user.id) // Make sure this user's profile is loaded, that way can check if they have a profile during the tab-bar inject
 
       /*try {
         const profile = pplMoeStore.getProfile(user.id)
@@ -117,34 +128,86 @@ class PplMoe extends Plugin {
           }
         })
       }*/
-    })
+    //})
 
-    inject('ppl-moe-user-tab-bar', UserProfile.prototype, 'renderTabBar', function (_, res) {
-      const { user } = this.props
-      if (!res || !user || user.bot) return res // Do not add a tab if there is no tab bar, no user, or the user's a bot
+    /*inject('ppl-moe-tab-bar-load', TabBar.prototype, 'componentDidMount', function (a, res) {
+      console.log("ppl-moe-tab-bar-load")
+      console.log(this)
+      //const { user } = this.props
+      //if (!user || user.bot) return res
+
+      //loadProfile(user.id) // Make sure this user's profile is loaded, that way can check if they have a profile during the tab-bar inject
+
+      /*try {
+        const profile = pplMoeStore.getProfile(user.id)
+        this.setState({ ppl_moe: { profile: profile } })
+      } catch (e) {
+        this.setState({
+          ppl_moe: {
+            error: e.statusCode ? e.statusCode : 'UNKNOWN'  // Directly corresponds to a translation key
+          }
+        })
+      }*/
+    //})
+
+    inject('ppl-moe-tab-bar', TabBar.prototype, 'render', function (_, res) {
+      console.log("ppl-moe-tab-bar")
+      console.log(res)
+      if (!res.props.className.includes(TabBar.Types.TOP)) return res
+      //console.log(this.props)
+      //if (!res || !this.props.user || this.props.user.bot) return res // Do not add a tab if there is no tab bar, no user, or the user's a bot
 
       // the user's profile has already been loaded/requested to load by the "user-load" inject
-      const profile = pplMoeStore.getProfile(user.id)
-      if (!profile || profile == 0) return res
+      //const profile = pplMoeStore.getProfile(user.id)
+      //if (!profile || profile == 0) return res
       // if it hasn't loaded yet or the user has no profile, just return
 
       // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
       const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
+
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
         className: classes.tabBarItem + (tabIcon ? " " + classes.pplMoeTabIcon : ""),
         id: "PPL_MOE"
       }, Messages.PPL_MOE_TAB)
 
+      console.log(bioTab)
+
       // Add the ppl.moe tab bar item to the list
-      res.props.children.props.children.push(bioTab)
+      res.props.children.push(bioTab)
 
       return res
     })
 
-    inject('ppl-moe-user-body', UserProfile.prototype, 'render', function (_, res) {
+    inject('ppl-moe-user-body', UserProfile, 'default', function (_, res) {
+      console.log("ppl-moe-user-body")
+      console.log(res)
+
+      if (UserProfileBody == null) {
+        UserProfileBody = res.props.children.props.children[1].props.children.type
+        console.log(UserProfileBody)
+
+        inject('ppl-moe-user-body-wtf-is-this', UserProfileBody, 'default', function (_, res) {
+          console.log("body?????????")
+          console.log(res)
+
+          /*const bioTab = React.createElement(TabBar.Item, {
+            key: "PPL_MOE",
+            className: classes.tabBarItem,
+            id: "PPL_MOE"
+          }, Messages.PPL_MOE_TAB)
+
+          console.log(bioTab)
+          res.props.children.props.children.push(bioTab)*/
+
+          return res
+        })
+
+        console.log(UserProfileBody.default)
+      }
+      return res
       // If we're in a different section, don't do anything
-      if (this.props.section !== "PPL_MOE") return res
+      /*if (this.props.section !== "PPL_MOE") return res
 
       // Find the body, clear it, & add our info
       const body = res.props.children.props.children[1]
@@ -159,7 +222,7 @@ class PplMoe extends Plugin {
         profile: profile
       }))
 
-      return res
+      return res*/
     })
 
   }
@@ -170,7 +233,9 @@ class PplMoe extends Plugin {
 
     uninject('ppl-moe-messages-header')
     uninject('ppl-moe-user-load')
-    uninject('ppl-moe-user-tab-bar')
+    //uninject('ppl-moe-tab-bar-load')
+    uninject('ppl-moe-tab-bar')
+    uninject('ppl-moe-user-body-wtf-is-this')
     uninject('ppl-moe-user-body')
   }
 
@@ -184,7 +249,7 @@ class PplMoe extends Plugin {
   }
 
   async _getUserProfile() {
-    const VeryVeryDecoratedUserProfile = await getModuleByDisplayName('UserProfile')
+    const VeryVeryDecoratedUserProfile = await getModuleByDisplayName('UserProfileModal')
     const VeryDecoratedUserProfileBody = VeryVeryDecoratedUserProfile.prototype.render().type
     const DecoratedUserProfileBody = this._extractFromFlux(VeryDecoratedUserProfileBody).render().type
     const UserProfile = DecoratedUserProfileBody.prototype.render.call({ props: { forwardedRef: null } }).type
