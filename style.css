@@ -21,6 +21,9 @@
 .ppl-moe-link:hover {
   text-decoration: underline;
 }
+.ppl-moe-badges {
+  text-align: right;
+}
 .ppl-moe-pronouns {
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -33,13 +36,13 @@
 }
 
 /* ppl.moe tab icon stuff for Comfy theme */
-.tabBarContainer-1s1u-z:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"] {
+.tabBarContainer-37hZsr:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"] {
     text-indent: 100%;
     overflow: hidden;
     margin: 0 30px;
     width: 30px;
 }
-.tabBarContainer-1s1u-z:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"]:after {
+.tabBarContainer-37hZsr:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"]:after {
   position: absolute;
   content: "";
   width: 30px;
