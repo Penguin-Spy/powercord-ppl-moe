@@ -67,9 +67,16 @@ class PplMoe extends Plugin {
 
     const MessageHeader = await this._getMessageHeader()
     //const UserProfile = await this._getUserProfile()
-    const UserProfile = (await getModule((m) => m.default?.displayName == 'UserProfileModal'))
-    console.log(UserProfile)
+    const UserProfileModal = (getAllModules(m => {
+      if (m.displayName && m.displayName == "UserProfileModal") {
+        return m
+      }
+    }))[0]
+    console.log(UserProfileModal)
     var UserProfileBody = null; // man i love react/electron/discord/me not knowing wtf i'm doing (probably that last one)
+    var UserProfileTabBar = null; // yeet
+
+    const UserInfoBase = await getModule((m) => m.default?.displayName == 'UserInfoBase')
     //const UserProfile = (await getModule((m) => m.default?.displayName == 'UserProfileModal')).default
     //const UserProfile = (await getModule((m) => m.default?.displayName == 'UserProfileModal'))
     const TabBar = await getModuleByDisplayName("TabBar")
@@ -171,6 +178,8 @@ class PplMoe extends Plugin {
         id: "PPL_MOE"
       }, Messages.PPL_MOE_TAB)
 
+      bioTab.props.onItemSelect = res.props.children[0].props.onItemSelect
+
       console.log(bioTab)
 
       // Add the ppl.moe tab bar item to the list
@@ -179,35 +188,44 @@ class PplMoe extends Plugin {
       return res
     })
 
-    inject('ppl-moe-user-body', UserProfile, 'default', function (_, res) {
-      console.log("ppl-moe-user-body")
+    // runtime injection (inside this injection) seems like a terrible idea.
+    // i'm sorry???
+    inject('ppl-moe-user-profile-modal', UserProfileModal, 'default', function (_, res) {
+      console.log("ppl-moe-user-profile-modal")
       console.log(res)
 
-      if (UserProfileBody == null) {
-        UserProfileBody = res.props.children.props.children[1].props.children.type
-        console.log(UserProfileBody)
+      if (UserProfileTabBar == null) {
+        UserProfileTabBar = res.props.children.props.children[1].props.children.type
+        console.log(UserProfileTabBar)
 
-        inject('ppl-moe-user-body-wtf-is-this', UserProfileBody, 'default', function (_, res) {
-          console.log("body?????????")
+        inject('ppl-moe-user-profile-tab-bar', UserProfileTabBar, 'default', function (_, res) {
+          console.log("tab bar???")
           console.log(res)
-
-          /*const bioTab = React.createElement(TabBar.Item, {
-            key: "PPL_MOE",
-            className: classes.tabBarItem,
-            id: "PPL_MOE"
-          }, Messages.PPL_MOE_TAB)
-
-          console.log(bioTab)
-          res.props.children.props.children.push(bioTab)*/
 
           return res
         })
 
         console.log(UserProfileBody.default)
       }
+
+      if (UserProfileBody == null) {
+        UserProfileBody = res.props.children.props.children[1].props.children.type
+        console.log(UserProfileBody)
+
+        inject('ppl-moe-user-profile-body', UserProfileBody, 'default', function (_, res) {
+          console.log("body?????????")
+          console.log(res)
+
+          return res
+        })
+
+        console.log(UserProfileBody.default)
+      }
+
       return res
+
       // If we're in a different section, don't do anything
-      /*if (this.props.section !== "PPL_MOE") return res
+      if (this.props.section !== "PPL_MOE") return res
 
       // Find the body, clear it, & add our info
       const body = res.props.children.props.children[1]
@@ -222,8 +240,29 @@ class PplMoe extends Plugin {
         profile: profile
       }))
 
-      return res*/
+      return res
     })
+
+
+    inject('ppl-moe-user-profile-body-base', UserInfoBase, 'default', function ([props], res) {
+      console.log("UserInfoBase")
+      console.log(props)
+      console.log(res)
+      /*res.props.children[0].props.children.push(
+        React.createElement(Pronouns, {
+          userId: props.user.id,
+          region: 'profile',
+          render: (p) => React.createElement(
+            React.Fragment,
+            null,
+            React.createElement('div', { className: 'userInfoSectionHeader-3TYk6R base-1x0h_U size12-3cLvbJ uppercase-3VWUQ9' }, 'Pronouns'),
+            React.createElement('div', { className: 'marginBottom8-AtZOdT size14-e6ZScH colorStandard-2KCXvj' }, p)
+          )
+        })
+      );*/
+
+      return res;
+    });
 
   }
 
@@ -232,11 +271,12 @@ class PplMoe extends Plugin {
     powercord.api.settings.unregisterSettings('ppl-moe');
 
     uninject('ppl-moe-messages-header')
-    uninject('ppl-moe-user-load')
+    //uninject('ppl-moe-user-load')
     //uninject('ppl-moe-tab-bar-load')
     uninject('ppl-moe-tab-bar')
-    uninject('ppl-moe-user-body-wtf-is-this')
-    uninject('ppl-moe-user-body')
+    uninject('ppl-moe-user-profile-modal')
+    uninject('ppl-moe-user-profile-tab-bar')
+    uninject('ppl-moe-user-profile-body')
   }
 
   /* The following code is slightly modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
