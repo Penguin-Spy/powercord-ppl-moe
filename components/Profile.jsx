@@ -13,7 +13,7 @@ function HeaderBlock(props) {
   return (
     <div className={classes.pplMoeSectionHeader}>
       <div className={classes.userInfoSectionText}>{tagline}</div>
-      <div>{badgesString}</div>
+      <div className={classes.pplMoeBadges}>{badgesString}</div>
     </div>
   )
 }
