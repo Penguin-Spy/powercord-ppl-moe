@@ -122,7 +122,7 @@ class PplMoe extends Plugin {
       // if it hasn't loaded yet or the user has no profile, just return
 
       // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
-      const tabIcon = powercord.styleManager.isInstalled("Comfy-git-clone") && powercord.styleManager.isEnabled("Comfy-git-clone")
+      const tabIcon = powercord.styleManager.isInstalled("Comfy") && powercord.styleManager.isEnabled("Comfy")
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
