@@ -4,8 +4,8 @@ function HeaderBlock(props) {
   const { tagline, badges, classes } = props;
   let badgesString = ""
   if (badges.includes("admin")) badgesString += " ⭐"
-  if (badges.includes("bug_hunter")) badgesString += " ⚒️"
-  if (badges.includes("indev")) badgesString += " 🐛"
+  if (badges.includes("bug_hunter")) badgesString += " 🐛"
+  if (badges.includes("indev")) badgesString += " ⚒️"
 
   // If there's no information to be shown here, don't add an element
   if (tagline == "Spookily-empty tagline! 👻" && badgesString == "") return null
