@@ -23,14 +23,20 @@ function InfoBlock(props) {
   if (info[key] != "") { // If this field isn't empty
     let text
 
-    if (key == 'website') {  // If it's the website, make it a link to the text
-      text = (
-        <a className={classes.pplMoeLink} href={info[key]} target="_blank">
-          {info[key]}
-        </a>
-      )
-    } else {
-      text = info[key]
+    switch (key) {
+      case 'website': // If it's the website, make it a link to the text
+        text = (
+          <a className={classes.pplMoeLink} href={info[key]} target="_blank">
+            {info[key]}
+          </a>
+        )
+        break;
+      case 'birthday':
+        let birthday = info[key].split("-")
+        text = Messages[`PPL_MOE_MONTH_${birthday[0]}`] + " " + birthday[1]
+        break;
+      default:
+        text = info[key]
     }
 
     return (
