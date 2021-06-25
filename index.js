@@ -10,6 +10,7 @@ const { loadProfile, doLoadProfile } = require('./store/action.js')
 const Settings = require('./components/Settings.jsx')
 const Pronouns = require('./components/Pronouns.jsx')
 const Profile = require('./components/Profile.jsx')
+const ProfileError = require('./components/ProfileError.jsx')
 
 class PplMoe extends Plugin {
 
@@ -46,7 +47,7 @@ class PplMoe extends Plugin {
             profile = pplMoeStore.getProfile(id)
           }
 
-          if (!profile) return
+          if (!profile || profile.banned) return
 
           return ({
             type: "ppl-moe",
@@ -170,14 +171,14 @@ class PplMoe extends Plugin {
       if (selectedSection != "PPL_MOE") return res
 
       const profile = pplMoeStore.getProfile(props.user.id)
-      if (!profile || profile == 0) return (
-        React.createElement('div', { className: classes.infoScroller },
-          React.createElement('div', { className: classes.pplMoeSectionHeader },
-            React.createElement('div', { className: classes.userInfoSectionHeader }, Messages.PPL_MOE_ERROR),
-            React.createElement('div', { className: classes.userInfoSectionText }, Messages.PPL_MOE_ERROR_404)
-          )
-        )
-      )
+      if (!profile) return React.createElement(ProfileError, {
+        classes: classes,
+        error: '404',
+      })
+      if (profile.banned) return React.createElement(ProfileError, {
+        classes: classes,
+        error: 'BANNED',
+      })
 
       return React.createElement(Profile, {
         classes: classes,

@@ -32,8 +32,8 @@ const { getStore } = require('../store/store.js')
 function Pronouns({ userId, profile }) {
   React.useEffect(() => void loadProfile(userId), [userId])
 
-  // profile not loaded; no profile; no info (likely banned from ppl.moe); or no pronouns set
-  if (!profile || profile == 0 || !profile.info || profile.info.pronouns == "") return null
+  // profile not loaded/no profile; no info (likely banned from ppl.moe); or no pronouns set
+  if (!profile || !profile.info || profile.info.pronouns == "") return null
   return React.createElement(React.Fragment, {}, ' • ', profile.info.pronouns)
 }
 

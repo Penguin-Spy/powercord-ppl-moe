@@ -86,7 +86,7 @@ function AboutBlock(props) {
   return null
 }
 
-module.exports = class PplMoeProfile extends React.Component {
+module.exports = class Profile extends React.Component {
   render() {
     const { classes, profile } = this.props;
     return (

@@ -1,7 +1,7 @@
 const { React, i18n: { Messages } } = require('powercord/webpack');
 const { SwitchItem } = require('powercord/components/settings');
 
-module.exports = class PplMoeSettings extends React.Component {
+module.exports = class Settings extends React.Component {
   render() {
     return (
       <div className="ppl-moe-settings">
