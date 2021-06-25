@@ -1,6 +1,6 @@
 {
   "name": "ppl.moe",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "description": "Shows a user's ppl.moe profile in a new tab in their user modal. \nAlso shows their pronouns next to their name in messages (similar to & compatible with the PronounDB plugin).",
   "author": "Penguin_Spy",
   "permissions": "ext_api",

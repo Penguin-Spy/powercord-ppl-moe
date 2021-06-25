@@ -74,6 +74,7 @@ class PplMoe extends Plugin {
     const pplMoeStore = getStore()
     const classes = {
       tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
+      userProfileTabBar: await getAllModules(['tabBar'])[4].tabBar,
       infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
       userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase,
       userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
@@ -113,7 +114,7 @@ class PplMoe extends Plugin {
     inject('ppl-moe-tab-bar', TabBar.prototype, 'render', function (_, res) {
       //console.log("ppl-moe-tab-bar")
       //console.log(res)
-      if (!res.props.className.includes(TabBar.Types.TOP)) return res
+      if (!res.props.className.includes(classes.userProfileTabBar)) return res
       //console.log(this.props)
       //if (!res || !this.props.user || this.props.user.bot) return res // Do not add a tab if there is no tab bar, no user, or the user's a bot
 
