@@ -23,6 +23,8 @@
   "PPL_MOE_SETTINGS_SHOW_PRONOUNS_DESCRIPTION": "Show ppl.moe pronouns at the top of the user's message",
   "PPL_MOE_SETTINGS_HIDE_PRONOUNDB": "Hide PronounDB",
   "PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION": "Hide PronounDB's pronouns if there are ppl.moe ones present",
+  "PPL_MOE_SETTINGS_USER_MODAL_ICON": "User Modal Icon",
+  "PPL_MOE_SETTINGS_USER_MODAL_ICON_DESCRIPTION": "Display an icon instead of text for the User Modal tab.",
   "PPL_MOE_ERROR": "Error",
   "PPL_MOE_ERROR_404": "No profile found :(",
   "PPL_MOE_ERROR_BANNED": "User has been banned."

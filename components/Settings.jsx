@@ -20,6 +20,13 @@ module.exports = class Settings extends React.Component {
         >
           {Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB}
         </SwitchItem>
+        <SwitchItem
+          note={Messages.PPL_MOE_SETTINGS_USER_MODAL_ICON_DESCRIPTION}
+          value={this.props.getSetting('userModalIcon', false)}
+          onChange={() => { this.props.toggleSetting('userModalIcon', false) }}
+        >
+          {Messages.PPL_MOE_SETTINGS_USER_MODAL_ICON}
+        </SwitchItem>
       </div>
     )
   }

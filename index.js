@@ -73,8 +73,8 @@ class PplMoe extends Plugin {
 
     const pplMoeStore = getStore()
     const classes = {
-      tabBarItem: await getAllModules(['tabBarItem'])[1].tabBarItem,
-      userProfileTabBar: await getAllModules(['tabBar'])[4].tabBar,
+      tabBarItem: await getAllModules(['tabBarItem'])[2].tabBarItem,
+      userProfileTabBar: await getAllModules(['tabBar'])[5].tabBar,
       infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
       userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase,
       userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
@@ -124,7 +124,9 @@ class PplMoe extends Plugin {
       // if it hasn't loaded yet or the user has no profile, just return
 
       // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
-      const tabIcon = powercord.styleManager.isInstalled("Comfy") && powercord.styleManager.isEnabled("Comfy")
+      // Or if the config setting is enabled
+      const tabIcon = (powercord.styleManager.isInstalled("Comfy") && powercord.styleManager.isEnabled("Comfy"))
+                      || powercord.api.settings.store.getSetting("powercord-ppl-moe", "userModalIcon", false)
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
@@ -132,7 +134,7 @@ class PplMoe extends Plugin {
         id: "PPL_MOE"
       }, Messages.PPL_MOE_TAB)
 
-      // uhhh
+      // uhhh yea
       bioTab.props.onItemSelect = res.props.children[0].props.onItemSelect
 
       // Add the ppl.moe tab bar item to the list
