@@ -51,7 +51,7 @@ class PplMoe extends Plugin {
 
           return ({
             type: "ppl-moe",
-            id: profile.unique_url,
+            url: profile.unique_url,
             name: profile.name,
             verified: true
           });
@@ -60,7 +60,7 @@ class PplMoe extends Plugin {
         }
       },
       getPlatformUserUrl: (account) => {
-        return `https://ppl.moe/u/${encodeURIComponent(account.id)}`;
+        return `https://ppl.moe/u/${encodeURIComponent(account.url)}`;
       },
       onDisconnect: () => void 0
     });
@@ -73,9 +73,9 @@ class PplMoe extends Plugin {
 
     const pplMoeStore = getStore()
     const classes = {
-      tabBarItem: await getAllModules(['tabBarItem'])[2].tabBarItem,
-      userProfileTabBar: await getAllModules(['tabBar'])[5].tabBar,
-      infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[0].thin + " " + getAllModules(['fade'])[0].fade,
+      tabBarItem: await getAllModules(['tabBar'])[2].tabBarItem,
+      userProfileTabBar: await getAllModules(['tabBar'])[2].tabBar,
+      infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[1].thin + " " + getAllModules(['scrollerBase'])[1].fade,
       userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase,
       userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
       pplMoeSectionHeader: "ppl-moe-section-header",
@@ -126,7 +126,7 @@ class PplMoe extends Plugin {
       // Check if the Comfy theme is installed AND enabled, because isEnabled defaults to true if the theme doesnt exist (for some reason????)
       // Or if the config setting is enabled
       const tabIcon = (powercord.styleManager.isInstalled("Comfy") && powercord.styleManager.isEnabled("Comfy"))
-                      || powercord.api.settings.store.getSetting("powercord-ppl-moe", "userModalIcon", false)
+        || powercord.api.settings.store.getSetting("powercord-ppl-moe", "userModalIcon", false)
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
