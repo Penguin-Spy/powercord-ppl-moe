@@ -75,9 +75,10 @@ class PplMoe extends Plugin {
     const classes = {
       tabBarItem: await getAllModules(['tabBar'])[2].tabBarItem,
       userProfileTabBar: await getAllModules(['tabBar'])[2].tabBar,
-      infoScroller: getModule(['infoScroller'], false).infoScroller + " " + await getAllModules(['scrollerBase'])[1].thin + " " + getAllModules(['scrollerBase'])[1].fade,
-      userInfoSectionHeader: getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase,
-      userInfoSectionText: getAllModules(['marginBottom8'])[0].marginBottom8 + " " + getAllModules(['size14'])[0].size14 + " " + getModule(['colorStandard'], false).colorStandard,
+      infoScroller: await getModule(['infoScroller']).infoScroller + " " + await getAllModules(['scrollerBase'])[1].thin + " " + await getAllModules(['scrollerBase'])[1].fade,
+      userInfoSectionHeader: await getModule(['userInfoSectionHeader']).userInfoSectionHeader + " " + await getModule(['size12']).size12 + " " + await getModule(['uppercase']).uppercase,
+      userInfoSectionText: await getAllModules(['marginBottom8'])[0].marginBottom8 + " " + await getAllModules(['size14'])[0].size14 + " " + await getModule(['colorStandard']).colorStandard,
+
       pplMoeSectionHeader: "ppl-moe-section-header",
       pplMoeSectionInfo: "ppl-moe-section-info",
       pplMoeSectionBio: "ppl-moe-section-bio",
