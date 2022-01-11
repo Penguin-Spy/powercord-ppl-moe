@@ -31,7 +31,7 @@
 }
 
 /* Hide pronoundb pronouns if after the ppl.moe ones */
-.ppl-moe-pronouns-hide-pronoundb:not(:empty) ~ span[style*="color: var(--text-muted);"] {
+h2:not([aria-describedby="reply-context-pronoundb-fake"]) > .ppl-moe-pronouns-hide-pronoundb:not(:empty) ~ span[style*="color: var(--text-muted);"] {
   display: none;
 }
 

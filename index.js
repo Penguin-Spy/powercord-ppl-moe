@@ -92,7 +92,8 @@ class PplMoe extends Plugin {
     var selectedSection = null; // i hate this but it works and i have NO idea how else to get it working
 
     inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
-      if (!props.message.author.id || props.message.author.bot) return res
+      // unknown author, bot author, or the PronounDB example message in the settings
+      if (!props.message.author.id || props.message.author.bot || props.message.id == "pronoundb-fake") return res
       if (!powercord.api.settings.store.getSetting("powercord-ppl-moe", "showPronouns", true)) return res
 
       const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)

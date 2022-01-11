@@ -3,6 +3,7 @@ const { SwitchItem } = require('powercord/components/settings');
 
 module.exports = class Settings extends React.Component {
   render() {
+    const pronounDBisPresent = powercord.pluginManager.isInstalled("pronoundb-powercord") && powercord.pluginManager.isEnabled("pronoundb-powercord");
     return (
       <div className="ppl-moe-settings">
         <SwitchItem
@@ -13,10 +14,10 @@ module.exports = class Settings extends React.Component {
           {Messages.PPL_MOE_SETTINGS_SHOW_PRONOUNS}
         </SwitchItem>
         <SwitchItem
-          note={Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION}
+          note={pronounDBisPresent ? Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION : Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION_INSTALL}
           value={this.props.getSetting('hidePronounDB', true)}
           onChange={() => { this.props.toggleSetting('hidePronounDB', true) }}
-          disabled={!this.props.getSetting('showPronouns', true)}
+          disabled={!this.props.getSetting('showPronouns', true) || !pronounDBisPresent}
         >
           {Messages.PPL_MOE_SETTINGS_HIDE_PRONOUNDB}
         </SwitchItem>
