@@ -7,10 +7,13 @@ It also shows their pronouns next to their name in messages (similar to & compat
 - A new tab in the user modal that displays their ppl.moe profile
 - ~~Does not show the tab for users that do not have a ppl.moe profile~~ (broken currently)
 - Tab icons (instead of text) for the Comfy theme!
-- A new connection that links to their profile on the [ppl.moe website](https://ppl.moe/)
+- ~~A new connection that links to their profile on the [ppl.moe website](https://ppl.moe/)~~ (Powercord feature for this is broken currently)
 - Displays a user's pronouns in the message header, just like the [PronounDB plugin](https://github.com/cyyynthia/pronoundb-powercord)
 - Automatically hides PronounDB's pronouns if there are ppl.moe ones to show
 - Settings for the above two features
+
+# Known Issues
+- On client open/reload, the very first User Modal will not display the tab, regardless of ppl.moe profile. However, this fixes itself as soon as you close & reopen any User Modal.
 
 # Installation
 Open command prompt and run:  

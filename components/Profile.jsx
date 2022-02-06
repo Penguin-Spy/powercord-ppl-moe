@@ -7,9 +7,6 @@ function HeaderBlock(props) {
   if (badges.includes("bug_hunter")) badgesString += " 🐛"
   if (badges.includes("indev")) badgesString += " ⚒️"
 
-  // If there's no information to be shown here, don't add an element
-  if (tagline == "Spookily-empty tagline! 👻" && badgesString == "") return null
-
   return (
     <div className={classes.pplMoeSectionHeader}>
       <div className={classes.userInfoSectionText}>{tagline}</div>

@@ -1,5 +1,5 @@
 const { Plugin } = require('powercord/entities')
-const { inject, uninject } = require('powercord/injector')
+const { inject, uninject, isInjected } = require('powercord/injector')
 const { React, getModule, getAllModules, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack')
 const { TabBar } = require('powercord/components')
 const { get } = require('powercord/http')
@@ -67,18 +67,10 @@ class PplMoe extends Plugin {
     // end of yoinkage
 
     const MessageHeader = await this._getMessageHeader()
-    const UserProfileModal = await getModule((m) => m.default?.displayName == 'UserProfileModal')
-    const UserInfoBase = await getModule((m) => m.default?.displayName == 'UserInfoBase')
     const TabBar = await getModuleByDisplayName("TabBar")
 
     const pplMoeStore = getStore()
     const classes = {
-      tabBarItem: await getAllModules(['tabBar'])[2].tabBarItem,
-      userProfileTabBar: await getAllModules(['tabBar'])[2].tabBar,
-      infoScroller: await getModule(['infoScroller']).infoScroller + " " + await getAllModules(['scrollerBase'])[1].thin + " " + await getAllModules(['scrollerBase'])[1].fade,
-      userInfoSectionHeader: await getModule(['userInfoSectionHeader']).userInfoSectionHeader + " " + await getModule(['size12']).size12 + " " + await getModule(['uppercase']).uppercase,
-      userInfoSectionText: await getAllModules(['marginBottom8'])[0].marginBottom8 + " " + await getAllModules(['size14'])[0].size14 + " " + await getModule(['colorStandard']).colorStandard,
-
       pplMoeSectionHeader: "ppl-moe-section-header",
       pplMoeSectionInfo: "ppl-moe-section-info",
       pplMoeSectionBio: "ppl-moe-section-bio",
@@ -88,8 +80,6 @@ class PplMoe extends Plugin {
       pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb",
       pplMoeTabIcon: "ppl-moe-tab-icon"
     }
-
-    var selectedSection = null; // i hate this but it works and i have NO idea how else to get it working
 
     inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
       // unknown author, bot author, or the PronounDB example message in the settings
@@ -114,10 +104,7 @@ class PplMoe extends Plugin {
     })
 
     inject('ppl-moe-tab-bar', TabBar.prototype, 'render', function (_, res) {
-      //console.log("ppl-moe-tab-bar")
-      //console.log(res)
       if (!res.props.className.includes(classes.userProfileTabBar)) return res
-      //console.log(this.props)
       //if (!res || !this.props.user || this.props.user.bot) return res // Do not add a tab if there is no tab bar, no user, or the user's a bot
 
       // the user's profile has already been loaded/requested to load by the "user-load" inject
@@ -132,64 +119,61 @@ class PplMoe extends Plugin {
 
       const bioTab = React.createElement(TabBar.Item, {
         key: "PPL_MOE",
-        className: classes.tabBarItem + (tabIcon ? " " + classes.pplMoeTabIcon : ""),
+        className: classes.userProfileTabBarItem + (tabIcon ? " " + classes.pplMoeTabIcon : ""),
         id: "PPL_MOE"
       }, Messages.PPL_MOE_TAB)
 
-      // uhhh yea
-      bioTab.props.onItemSelect = res.props.children[0].props.onItemSelect
+      // grab the function that sets the 'selectedSection' to the tab's id
+      bioTab.props.onItemSelect = res.props.children[0].props.onItemSelect;
 
       // Add the ppl.moe tab bar item to the list
       res.props.children.push(bioTab)
       return res
     })
 
-    inject('ppl-moe-user-profile-modal', UserProfileModal, 'default', function (_, res) {
+    this.lazyPatchProfileModal(
+      m => m.default && m.default.displayName === 'UserProfileModal',
+      UserProfileModal => {
+        inject('ppl-moe-user-profile-modal', UserProfileModal, 'default', ([{ user }], res) => {
+          // these must be loaded here because modal classes are lazily loaded
+          if (!classes.lazyLoadedClasses) {
+            classes.userProfileTabBar = getAllModules(['tabBar'], false)[6].tabBar;
+            classes.userProfileTabBarItem = getAllModules(['tabBar'], false)[6].tabBarItem;
+            classes.infoScroller = getModule(['infoScroller'], false).infoScroller + " " + getAllModules(['scrollerBase'], false)[1].thin + " " + getAllModules(['scrollerBase'], false)[1].fade;
+            classes.userInfoSectionHeader = getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase;
+            classes.userInfoSectionText = getAllModules(['marginBottom8'], false)[0].marginBottom8 + " " + getAllModules(['size14'], false)[0].size14 + " " + getModule(['colorStandard'], false).colorStandard;
+            classes.lazyLoadedClasses = true;
+          }
 
-      selectedSection = res.props.children.props.children[1].props.children.props.selectedSection;
+          // fetch their profile for later viewing
+          if (pplMoeStore.shouldFetchProfile(user.id)) doLoadProfile(user.id);
 
-      return res
-    })
+          // re-inject into the function that decides which tab to display
+          if (isInjected('ppl-moe-user-profile-tab-bar')) uninject('ppl-moe-user-profile-tab-bar');
+          inject('ppl-moe-user-profile-tab-bar', res.props.children.props.children[1].props.children, 'type', ([props], res) => {
+            if (props.selectedSection != "PPL_MOE") return res;
 
+            const profile = pplMoeStore.getProfile(user.id)
+            if (!profile) return React.createElement(ProfileError, {
+              classes: classes,
+              error: '404',
+            });
+            if (profile.banned) return React.createElement(ProfileError, {
+              classes: classes,
+              error: 'BANNED',
+            });
 
-    //console.log("ppl-moe-user-body")
-    //console.log(res)
-    // If we're in a different section, don't do anything
-    /*if (this.props.section !== "PPL_MOE") return res
+            return React.createElement(Profile, {
+              classes: classes,
+              profile: profile
+            });
+          });
 
-    // Find the body, clear it, & add our info
-    const body = res.props.children.props.children[1]
-    body.props.children = []
-
-    const profile = pplMoeStore.getProfile(this.props.user.id)
-    if (!profile || profile == 0) return res
-    // if it hasn't loaded yet or the user has no profile, just return
-
-    body.props.children.push(React.createElement(Profile, {
-      classes: classes,
-      profile: profile
-    }))
-
-    return res*/
-
-    inject('ppl-moe-user-info-base', UserInfoBase, 'default', function ([props], res) {
-      if (selectedSection != "PPL_MOE") return res
-
-      const profile = pplMoeStore.getProfile(props.user.id)
-      if (!profile) return React.createElement(ProfileError, {
-        classes: classes,
-        error: '404',
-      })
-      if (profile.banned) return React.createElement(ProfileError, {
-        classes: classes,
-        error: 'BANNED',
-      })
-
-      return React.createElement(Profile, {
-        classes: classes,
-        profile: profile
-      });
-    });
+          return res;
+        });
+        UserProfileModal.default.displayName = 'UserProfileModal'
+      }
+    )
   }
 
   pluginWillUnload() {
@@ -199,7 +183,7 @@ class PplMoe extends Plugin {
     uninject('ppl-moe-messages-header')
     uninject('ppl-moe-tab-bar')
     uninject('ppl-moe-user-profile-modal')
-    uninject('ppl-moe-user-info-base')
+    uninject('ppl-moe-user-profile-tab-bar')
   }
 
   /* The following code is slightly modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
@@ -212,6 +196,34 @@ class PplMoe extends Plugin {
   }
   /* End of code from pronoundb-powercord */
 
+  /* The following code is slightly modified from code found in https://github.com/Juby210/user-details, license/copyright can be found in that repository. */
+  async lazyPatchProfileModal(filter, patch) {
+    const m = getModule(filter, false)
+    if (m) patch(m)
+    else {
+      const { useModalsStore } = await getModule(['useModalsStore'])
+      inject('ppl-moe-lazy-modal', useModalsStore, 'setState', a => {
+        const og = a[0]
+        a[0] = (...args) => {
+          const ret = og(...args)
+          try {
+            if (ret?.default?.length) {
+              const el = ret.default[0]
+              if (el && el.render && el.render.toString().indexOf(',friendToken:') !== -1) {
+                uninject('ppl-moe-lazy-modal')
+                patch(getModule(filter, false))
+              }
+            }
+          } catch (e) {
+            this.error(e)
+          }
+          return ret
+        }
+        return a
+      }, true)
+    }
+  }
+  /* End of code from user-details */
 }
 
 module.exports = PplMoe
