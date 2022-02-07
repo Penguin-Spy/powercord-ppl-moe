@@ -35,6 +35,8 @@ class PplMoeStore extends Flux.Store {
       profile = false // we know this id has no profile
     }
 
+    if (profile.banned) profile = false
+
     FluxDispatcher.dirtyDispatch({
       type: 'PPL_MOE_PROFILE_LOADED',
       id: id,
@@ -46,5 +48,14 @@ class PplMoeStore extends Flux.Store {
 module.exports = new PplMoeStore(FluxDispatcher, {
   ['PPL_MOE_PROFILE_LOADED']: ({ id, loadedProfile }) => {
     profiles[id] = loadedProfile
+
+    // this is grotesque, but also it works so :shrug:
+    // when a valid profile is loaded and a user modal with the ppl.moe tab disabled is on screen, the tab is revealed.
+    // this could fail if a modal is shown (with no profile) and then a valid profile is loaded (from chat messages probably),
+    //   but that could only really happen when opening the modal immediatly after switching channels and getting quite (un)lucky
+    if (loadedProfile) {
+      const tabBarContainer = document.getElementsByClassName("ppl-moe-disable-tab")[0]
+      if (tabBarContainer) tabBarContainer.classList.remove("ppl-moe-disable-tab")
+    }
   }
 })

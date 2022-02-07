@@ -1,3 +1,8 @@
+/* hide tab button when disabled by user modal code */
+.ppl-moe-disable-tab > [data-item-id="PPL_MOE"] {
+  display: none;
+}
+
 /* style the tab content */
 .ppl-moe-section-header {
   display: grid;

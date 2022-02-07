@@ -67,7 +67,9 @@ class PplMoe extends Plugin {
       pplMoeBadges: "ppl-moe-badges",
       pplMoePronouns: "ppl-moe-pronouns",
       pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb",
-      pplMoeTabIcon: "ppl-moe-tab-icon"
+      pplMoeTabIcon: "ppl-moe-tab-icon",
+
+      pplMoeDisableTab: "ppl-moe-disable-tab"
     }
 
     inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
@@ -142,27 +144,30 @@ class PplMoe extends Plugin {
           // fetch their profile for later viewing
           pplMoeStore.ensureProfile(user.id)
 
-          // re-inject into the function that decides which tab to display
+          // inject into this instance of the function that decides which tab to display
           if (isInjected('ppl-moe-user-profile-tab-selector')) uninject('ppl-moe-user-profile-tab-selector')
           inject('ppl-moe-user-profile-tab-selector', res.props.children.props.children[1].props.children, 'type', ([props], res) => {
             if (props.selectedSection != "PPL_MOE") return res
 
-            React.useEffect(() => void pplMoeStore.ensureProfile(user.id), [user.id])
             const profile = pplMoeStore.getProfile(user.id)
-            if (!profile) return React.createElement(ProfileError, {
-              classes: classes,
-              error: '404',
-            })
-            if (profile.banned) return React.createElement(ProfileError, {
-              classes: classes,
-              error: 'BANNED',
-            })
+            if (!profile) return res  // shouldn't happen, just return the default USER_INFO tab
 
             return React.createElement(Profile, {
               classes: classes,
               profile: profile
             })
           })
+
+          // inject into this insance of the tab bar (only after we've rendered it the 1st time)
+          if (isInjected('ppl-moe-user-profile-tab-bar')) uninject('ppl-moe-user-profile-tab-bar')
+          if (res.props.children.props.children[0].props.children[1]) { // if tab bar exists
+            inject('ppl-moe-user-profile-tab-bar', res.props.children.props.children[0].props.children[1], 'type', ([props], res) => {
+              const profile = pplMoeStore.getProfile(props.user.id)
+              if (!profile) res.props.children.props.className += ` ${classes.pplMoeDisableTab}`
+              return res
+            })
+          }
+
           return res
         })
         UserProfileModal.default.displayName = 'UserProfileModal'
@@ -176,8 +181,10 @@ class PplMoe extends Plugin {
 
     uninject('ppl-moe-messages-header')
     uninject('ppl-moe-tab-bar')
+    uninject('ppl-moe-lazy-modal')
     uninject('ppl-moe-user-profile-modal')
     uninject('ppl-moe-user-profile-tab-selector')
+    uninject('ppl-moe-user-profile-tab-bar')
   }
 
   /* The following code is slightly modified from code found in https://github.com/cyyynthia/pronoundb-powercord, license/copyright can be found in that repository. */
