@@ -1,70 +1,50 @@
-/*
- * Copyright (c) 2020-2021 Cynthia K. Rey, All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holder nor the names of its contributors
- *    may be used to endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 const { Flux, FluxDispatcher } = require('powercord/webpack')
+const { get } = require('powercord/http')
 
+// list of loaded profiles
 let profiles = {}
-let timestamps = {}
+// profiles[id] == undefined means we don't know if that id has a profile
+//              == false     means we know that id doesn't have a profile
+//              == Object    the object is the user's profile (could be mostly empty &| banned)
+// this allows us to use !profile to check if they have a valid profile,
+// as well as differentiate between unfetched & nonexistent profiles
+
+// list of profiles currently being fetched
+let requestingProfiles = {}
+// profiles[id] == true  request is currently processing
+//                 false profile has already been requested (no code actually checks for this, just to differentiate in case we need to)
 
 class PplMoeStore extends Flux.Store {
-  //Note: not the exported fuction, left in because idk how Flux works but it might need it
-  getStore() {
-    return {
-      profiles,
-      timestamps
-    }
-  }
-
   getProfile(id) {
-    return profiles[id] ?? null
+    return profiles[id]
   }
 
-  shouldFetchProfile(id) {    // Profile caching persists until a reload, probably want to leave this commented to reduce API spam
-    return !(id in profiles)  // || timestamps[id] < Date.now()
+  // ensures we know about a user's profile after it's called (if awaited)
+  // also emits a flux dispatch when complete informing React that we now have the user's profile
+  async ensureProfile(id) {
+    if (id in profiles || id in requestingProfiles) return  // if we already have the profile || we already are requesting it
+
+    let profile
+    try {
+      requestingProfiles[id] = true // prevent re-requesting
+      profile = await get(`https://ppl.moe/api/user/discord/${id}`).then(r => {
+        requestingProfiles[id] = false
+        return r.body
+      })
+    } catch (e) {
+      profile = false // we know this id has no profile
+    }
+
+    FluxDispatcher.dirtyDispatch({
+      type: 'PPL_MOE_PROFILE_LOADED',
+      id: id,
+      loadedProfile: profile
+    })
   }
 }
 
-pplMoeStore = new PplMoeStore(FluxDispatcher, {
-  /* Start of code modified by Penguin_Spy */
+module.exports = new PplMoeStore(FluxDispatcher, {
   ['PPL_MOE_PROFILE_LOADED']: ({ id, loadedProfile }) => {
     profiles[id] = loadedProfile
-    timestamps[id] = Date.now() + (30 * 60e3) // 30 minutes
   }
-  /* end of code modified by Penguin_Spy */
 })
-
-module.exports = {
-  getStore: () => {
-    return pplMoeStore
-  },
-  getProfile(id) {
-    return pplMoeStore.getProfile(id)
-  },
-  shouldFetchProfile: (id) => {
-    return pplMoeStore.shouldFetchProfile(id)
-  }
-}

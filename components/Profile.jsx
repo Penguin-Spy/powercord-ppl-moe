@@ -1,7 +1,7 @@
 const { React, i18n: { Messages } } = require('powercord/webpack')
 
 function HeaderBlock(props) {
-  const { tagline, badges, classes } = props;
+  const { tagline, badges, classes } = props
   let badgesString = ""
   if (badges.includes("admin")) badgesString += " ⭐"
   if (badges.includes("bug_hunter")) badgesString += " 🐛"
@@ -16,7 +16,7 @@ function HeaderBlock(props) {
 }
 
 function InfoBlock(props) {
-  const { info, keyName: key, classes } = props;
+  const { info, keyName: key, classes } = props
   if (info[key] != "") { // If this field isn't empty
     let text
 
@@ -27,11 +27,11 @@ function InfoBlock(props) {
             {info[key]}
           </a>
         )
-        break;
+        break
       case 'birthday':
         let birthday = info[key].split("-")
         text = Messages[`PPL_MOE_MONTH_${birthday[0]}`] + " " + birthday[1]
-        break;
+        break
       default:
         text = info[key]
     }
@@ -74,7 +74,7 @@ function AboutBlock(props) {
     return (
       <div className={classes.pplMoeSectionBio}>
         <div className={classes.userInfoSectionHeader}>
-          {Messages.PPL_MOE_ABOUT} {name}
+          {Messages.PPL_MOE_ABOUT.intMessage.format({ name: name })}
         </div>
         <div className={classes.userInfoSectionText} dangerouslySetInnerHTML={{ __html: bioHTML }}></div>
       </div>
@@ -85,7 +85,7 @@ function AboutBlock(props) {
 
 module.exports = class Profile extends React.Component {
   render() {
-    const { classes, profile } = this.props;
+    const { classes, profile } = this.props
     return (
       <div className={classes.infoScroller} dir="ltr" style={{ 'overflow': "hidden scroll", 'padding-right': "12px" }}>
         <HeaderBlock tagline={profile.tagline} badges={profile.badges} classes={classes} />

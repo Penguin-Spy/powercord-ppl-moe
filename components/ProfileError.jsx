@@ -2,7 +2,7 @@ const { React, i18n: { Messages } } = require('powercord/webpack')
 
 module.exports = class ProfileError extends React.Component {
   render() {
-    const { classes, error } = this.props;
+    const { classes, error } = this.props
     return (
       <div className={classes.infoScroller} dir="ltr" style={{ 'overflow': "hidden scroll", 'padding-right': "12px" }}>
         <div className={classes.pplMoeSectionHeader}>

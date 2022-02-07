@@ -1,3 +1,4 @@
+/* style the tab content */
 .ppl-moe-section-header {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -25,32 +26,34 @@
   text-align: right;
 }
 .ppl-moe-pronouns {
-    font-size: 0.75rem;
-    font-weight: 500;
-    cursor: default;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: default;
+}
+.ppl-moe-profile-badge {
+  margin-left: .25rem;
+  vertical-align: top;
 }
 
 /* Hide pronoundb pronouns if after the ppl.moe ones */
-h2:not([aria-describedby="reply-context-pronoundb-fake"]) > .ppl-moe-pronouns-hide-pronoundb:not(:empty) ~ span[style*="color: var(--text-muted);"] {
+h2:not([aria-describedby="reply-context-pronoundb-fake"]) > .ppl-moe-pronouns-hide-pronoundb:not(:empty) ~ .pronoundb-pronouns {
   display: none;
 }
 
-/* ppl.moe tab icon stuff for Comfy theme */
-.tabBarContainer-37hZsr:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"] {
-    text-indent: 100%;
-    overflow: hidden;
-    margin: 0 30px;
-    width: 30px;
+/* ppl.moe tab icon */
+.ppl-moe-tab-icon {
+  text-indent: 100%;
+  overflow: hidden;
+  margin: 0 30px;
+  width: 30px;
 }
-.tabBarContainer-37hZsr:not(.flex-1xMQg5) .ppl-moe-tab-icon[data-item-id="PPL_MOE"]:after {
+.ppl-moe-tab-icon:after {
   position: absolute;
   content: "";
   width: 30px;
   height: 30px;
+  background-image: url("https://cdn.discordapp.com/icons/267500017260953601/034b9f1489370e90e499f426d7ea7bd6.webp");
   background-size: 100%;
   background-repeat: no-repeat;
   bottom: 18px;
-}
-.ppl-moe-tab-icon[data-item-id="PPL_MOE"]:after {
-  background-image: url("https://cdn.discordapp.com/icons/267500017260953601/034b9f1489370e90e499f426d7ea7bd6.webp");
 }

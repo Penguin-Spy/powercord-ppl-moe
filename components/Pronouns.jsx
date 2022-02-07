@@ -26,18 +26,15 @@
  */
 
 const { React, Flux } = require('powercord/webpack')
-const { loadProfile } = require('../store/action.js')
-const { getStore } = require('../store/store.js')
+const pplMoeStore = require('../store/store.js')
 
 function Pronouns({ userId, profile }) {
-  React.useEffect(() => void loadProfile(userId), [userId])
+  React.useEffect(() => void pplMoeStore.ensureProfile(userId), [userId])
 
-  // profile not loaded/no profile; no info (likely banned from ppl.moe); or no pronouns set
+  // profile not loaded/no profile, no info (likely banned from ppl.moe), or no pronouns set
   if (!profile || !profile.info || profile.info.pronouns == "") return null
   return React.createElement(React.Fragment, {}, ' • ', profile.info.pronouns)
 }
-
-let pplMoeStore = getStore()
 
 module.exports = Flux.connectStores(
   [pplMoeStore, powercord.api.settings.store],
