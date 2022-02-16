@@ -133,8 +133,8 @@ class PplMoe extends Plugin {
         inject('ppl-moe-user-profile-modal', UserProfileModal, 'default', ([{ user }], res) => {
           // these must be loaded here because modal classes are lazily loaded
           if (!classes.lazyLoadedClasses) {
-            classes.userProfileTabBar = getAllModules(['tabBar'], false)[6].tabBar
-            classes.userProfileTabBarItem = getAllModules(['tabBar'], false)[6].tabBarItem
+            classes.userProfileTabBar = getAllModules(['tabBar'], false)[5].tabBar
+            classes.userProfileTabBarItem = getAllModules(['tabBar'], false)[5].tabBarItem
             classes.infoScroller = getModule(['infoScroller'], false).infoScroller + " " + getAllModules(['scrollerBase'], false)[1].thin + " " + getAllModules(['scrollerBase'], false)[1].fade
             classes.userInfoSectionHeader = getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase
             classes.userInfoSectionText = getAllModules(['marginBottom8'], false)[0].marginBottom8 + " " + getAllModules(['size14'], false)[0].size14 + " " + getModule(['colorStandard'], false).colorStandard
