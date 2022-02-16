@@ -7,9 +7,8 @@ const Settings = require('./components/Settings.jsx')
 const Pronouns = require('./components/Pronouns.jsx')
 const ProfileBadge = require('./components/ProfileBadge.jsx')
 const Profile = require('./components/Profile.jsx')
-const ProfileError = require('./components/ProfileError.jsx')
 
-class PplMoe extends Plugin {
+module.exports = class PplMoe extends Plugin {
 
   async startPlugin() {
     powercord.api.i18n.loadAllStrings(require('./i18n'))
@@ -68,7 +67,6 @@ class PplMoe extends Plugin {
       pplMoePronouns: "ppl-moe-pronouns",
       pplMoePronounsHidePronounDB: "ppl-moe-pronouns-hide-pronoundb",
       pplMoeTabIcon: "ppl-moe-tab-icon",
-
       pplMoeDisableTab: "ppl-moe-disable-tab"
     }
 
@@ -133,11 +131,16 @@ class PplMoe extends Plugin {
         inject('ppl-moe-user-profile-modal', UserProfileModal, 'default', ([{ user }], res) => {
           // these must be loaded here because modal classes are lazily loaded
           if (!classes.lazyLoadedClasses) {
-            classes.userProfileTabBar = getAllModules(['tabBar'], false)[5].tabBar
-            classes.userProfileTabBarItem = getAllModules(['tabBar'], false)[5].tabBarItem
-            classes.infoScroller = getModule(['infoScroller'], false).infoScroller + " " + getAllModules(['scrollerBase'], false)[1].thin + " " + getAllModules(['scrollerBase'], false)[1].fade
-            classes.userInfoSectionHeader = getModule(['userInfoSectionHeader'], false).userInfoSectionHeader + " " + getModule(['size12'], false).size12 + " " + getModule(['uppercase'], false).uppercase
-            classes.userInfoSectionText = getAllModules(['marginBottom8'], false)[0].marginBottom8 + " " + getAllModules(['size14'], false)[0].size14 + " " + getModule(['colorStandard'], false).colorStandard
+            let userProfileTabBar = getAllModules(['tabBar', 'tabBarItem', 'root'], false)[0]
+            let userProfileInfo = getModule(['userInfoSectionHeader'], false)
+            let userProfileScroller = getAllModules(['scrollerBase', 'thin'], false)[0]
+            let userProfileHeader = getAllModules(['base', 'uppercase'], false)[0]
+
+            classes.userProfileTabBar = userProfileTabBar.tabBar
+            classes.userProfileTabBarItem = userProfileTabBar.tabBarItem
+            classes.infoScroller = `${userProfileInfo.infoScroller} ${userProfileScroller.thin} ${userProfileScroller.fade}`
+            classes.userInfoSectionHeader = `${userProfileInfo.userInfoSectionHeader} ${userProfileHeader.base}`
+            classes.userInfoSectionBio = `${userProfileInfo.userBio} ${getModule(['markup'], false).markup}`
             classes.lazyLoadedClasses = true
           }
 
@@ -226,5 +229,3 @@ class PplMoe extends Plugin {
   }
   /* End of code from user-details */
 }
-
-module.exports = PplMoe

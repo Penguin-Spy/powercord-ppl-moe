@@ -11,6 +11,10 @@
   grid-row-gap: 12px;
   padding: 20px 0;
 }
+.ppl-moe-badges {
+  text-align: right;
+}
+
 .ppl-moe-section-info {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
@@ -18,18 +22,45 @@
   grid-row-gap: 12px;
   padding: 0 0 20px;
 }
-.ppl-moe-section-bio {
-  display: grid;
-  grid-template-columns: 2 1;
-  border-top: 1px solid var(--background-modifier-accent);
-  padding: 20px 0;
+.ppl-moe-section-info div {
+  display: flex;
+  flex-direction: column;
+}
+.ppl-moe-section-info h1 {
+  display: flex;
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+.ppl-moe-section-header span,
+.ppl-moe-section-info span {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-normal);
+  user-select: text;
+  display: flex;
+}
+.ppl-moe-link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-link);
 }
 .ppl-moe-link:hover {
   text-decoration: underline;
 }
-.ppl-moe-badges {
-  text-align: right;
+
+.ppl-moe-section-bio {
+  display: grid;
+  grid-template-columns: 2 1;
+  border-top: 1px solid var(--background-modifier-accent);
+  padding: 20px 0 0;
 }
+.ppl-moe-section-bio h1 {
+  display: flex;
+}
+
+
+/* style chat elements */
 .ppl-moe-pronouns {
   font-size: 0.75rem;
   font-weight: 500;

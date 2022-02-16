@@ -9,7 +9,7 @@ function HeaderBlock(props) {
 
   return (
     <div className={classes.pplMoeSectionHeader}>
-      <div className={classes.userInfoSectionText}>{tagline}</div>
+      <span>{tagline}</span>
       <div className={classes.pplMoeBadges}>{badgesString}</div>
     </div>
   )
@@ -38,12 +38,12 @@ function InfoBlock(props) {
 
     return (
       <div>
-        <div className={classes.userInfoSectionHeader}>
+        <h1 className={classes.userInfoSectionHeader}>
           {Messages[`PPL_MOE_${key.toUpperCase()}`]}
-        </div>
-        <div className={classes.userInfoSectionText}>
+        </h1>
+        <span>
           {text}
-        </div>
+        </span>
       </div>
     )
   }
@@ -73,10 +73,12 @@ function AboutBlock(props) {
 
     return (
       <div className={classes.pplMoeSectionBio}>
-        <div className={classes.userInfoSectionHeader}>
+        <h1 className={classes.userInfoSectionHeader}>
           {Messages.PPL_MOE_ABOUT.intMessage.format({ name: name })}
-        </div>
-        <div className={classes.userInfoSectionText} dangerouslySetInnerHTML={{ __html: bioHTML }}></div>
+        </h1>
+        <span className={classes.userInfoSectionBio}
+          dangerouslySetInnerHTML={{ __html: bioHTML }}>
+        </span>
       </div>
     )
   }

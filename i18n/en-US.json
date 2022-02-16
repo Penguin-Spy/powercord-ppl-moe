@@ -28,8 +28,5 @@
   "PPL_MOE_SETTINGS_SHOW_PROFILE_BADGE": "Show Profile Badge",
   "PPL_MOE_SETTINGS_SHOW_PROFILE_BADGE_DESCRIPTION": "Show a ppl.moe badge next to a user's name if they have a ppl.moe profile. This will display regardless of if pronouns are displayed.",
   "PPL_MOE_SETTINGS_USER_MODAL_ICON": "User Modal Icon",
-  "PPL_MOE_SETTINGS_USER_MODAL_ICON_DESCRIPTION": "Display an icon instead of text for the User Modal tab.",
-  "PPL_MOE_ERROR": "Error",
-  "PPL_MOE_ERROR_404": "No profile found :(",
-  "PPL_MOE_ERROR_BANNED": "User has been banned."
+  "PPL_MOE_SETTINGS_USER_MODAL_ICON_DESCRIPTION": "Display an icon instead of text for the User Modal tab."
 }
