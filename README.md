@@ -1,5 +1,5 @@
 # Powercord ppl.moe
-![clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fstatthegit.penguinspy.repl.co%2Fsheilds%2Fpowercord-ppl-moe) [![Powercord](https://img.shields.io/badge/client-Powercord-7289D9?logo=discord&logoColor=fff)](https://powercord.dev/)  
+![clones](https://img.shields.io/endpoint?url=https://githubstats.penguinspy.repl.co/shields/powercord-ppl-moe) [![Powercord](https://img.shields.io/badge/client-Powercord-7289D9?logo=discord&logoColor=fff)](https://powercord.dev/)  
 This is a powercord plugin that displays a user's ppl.moe profile as a new tab in the user's modal.  
 It also shows their pronouns next to their name in messages (similar to & compatible with the PronounDB plugin).  
  
