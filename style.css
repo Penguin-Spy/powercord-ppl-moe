@@ -5,14 +5,12 @@
 
 /* style the tab content */
 .ppl-moe-section-header {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  grid-column-gap: 16px;
-  grid-row-gap: 12px;
+  display: flex;
   padding: 20px 0;
 }
 .ppl-moe-badges {
   text-align: right;
+  flex: 1;
 }
 
 .ppl-moe-section-info {
@@ -58,6 +56,9 @@
 .ppl-moe-section-bio h1 {
   display: flex;
 }
+.ppl-moe-section-bio span {
+  white-space: unset;
+}
 
 
 /* style chat elements */
@@ -72,7 +73,7 @@
 }
 
 /* Hide pronoundb pronouns if after the ppl.moe ones */
-h2:not([aria-describedby="reply-context-pronoundb-fake"]) > .ppl-moe-pronouns-hide-pronoundb:not(:empty) ~ .pronoundb-pronouns {
+.ppl-moe-pronouns-hide-pronoundb:not(:empty) ~ .pronoundb-pronouns {
   display: none;
 }
 
