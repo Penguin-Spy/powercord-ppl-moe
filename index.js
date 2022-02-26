@@ -70,38 +70,49 @@ module.exports = class PplMoe extends Plugin {
       pplMoeDisableTab: "ppl-moe-disable-tab"
     }
 
-    inject('ppl-moe-messages-header', MessageHeader, 'default', function ([props], res) {
-      // unknown author, bot author, or the PronounDB example message in the settings
-      if (!props.message.author.id || props.message.author.bot || props.message.id.includes("pronoundb-fake")) return res
+    let memoizedMessageHeader
+    inject('ppl-moe-messages-header', MessageHeader, 'default', function (_, res) {
+      if (!memoizedMessageHeader) {
+        const originalMessageHeader = res.type
+        memoizedMessageHeader = (props) => {
+          const res = originalMessageHeader(props)
 
-      if (powercord.api.settings.store.getSetting("powercord-ppl-moe", "showPronouns", true)) {
-        const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)
-        const pronouns = React.createElement('span',
-          { className: classes.pplMoePronouns + (hidePronounDB ? " " + classes.pplMoePronounsHidePronounDB : "") },
-          React.createElement(Pronouns, {
-            userId: props.message.author.id
-          })
-        )
+          // unknown author, bot author, or the PronounDB example message in the settings
+          if (!props.message.author.id || props.message.author.bot || props.message.id.includes("pronoundb-fake")) return res
 
-        try { // Attempt to put our span before PronounDB's (so that the CSS can apply)
-          res.props.children[1].props.children.splice(3, 0, pronouns)
-        } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
-          res.props.children[1].props.children.push(pronouns)
+          if (powercord.api.settings.store.getSetting("powercord-ppl-moe", "showPronouns", true)) {
+            const hidePronounDB = powercord.api.settings.store.getSetting("powercord-ppl-moe", "hidePronounDB", true)
+            const pronouns = React.createElement('span',
+              { className: classes.pplMoePronouns + (hidePronounDB ? " " + classes.pplMoePronounsHidePronounDB : "") },
+              React.createElement(Pronouns, {
+                userId: props.message.author.id
+              })
+            )
+
+            try { // Attempt to put our span before PronounDB's (so that the CSS can apply)
+              res.props.children[1].props.children.splice(3, 0, pronouns)
+            } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
+              res.props.children[1].props.children.push(pronouns)
+            }
+          }
+
+          if (powercord.api.settings.store.getSetting("powercord-ppl-moe", "showProfileBadge", true)) {
+            const profileBadge = React.createElement(ProfileBadge, {
+              userId: props.message.author.id
+            })
+
+            try { // Attempt to put our span before the timestamp
+              res.props.children[1].props.children.splice(2, 0, profileBadge)
+            } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
+              res.props.children[1].props.children.push(profileBadge)
+            }
+          }
+
+          return res
         }
       }
 
-      if (powercord.api.settings.store.getSetting("powercord-ppl-moe", "showProfileBadge", true)) {
-        const profileBadge = React.createElement(ProfileBadge, {
-          userId: props.message.author.id
-        })
-
-        try { // Attempt to put our span before the timestamp
-          res.props.children[1].props.children.splice(2, 0, profileBadge)
-        } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
-          res.props.children[1].props.children.push(profileBadge)
-        }
-      }
-
+      res.type = memoizedMessageHeader
       return res
     })
 
