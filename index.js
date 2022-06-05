@@ -90,7 +90,7 @@ module.exports = class PplMoe extends Plugin {
             )
 
             try { // Attempt to put our span before PronounDB's (so that the CSS can apply)
-              res.props.children[1].props.children.splice(3, 0, pronouns)
+              res.props.children[1].props.children.splice(4, 0, pronouns)
             } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
               res.props.children[1].props.children.push(pronouns)
             }
@@ -102,7 +102,7 @@ module.exports = class PplMoe extends Plugin {
             })
 
             try { // Attempt to put our span before the timestamp
-              res.props.children[1].props.children.splice(2, 0, profileBadge)
+              res.props.children[1].props.children.splice(3, 0, profileBadge)
             } catch (e) { // If it fails, just shove it on the end and call it a day, who knows what the array looks like.
               res.props.children[1].props.children.push(profileBadge)
             }
