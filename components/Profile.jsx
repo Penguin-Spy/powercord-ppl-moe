@@ -76,7 +76,7 @@ function AboutBlock(props) {
         <h1 className={classes.userInfoSectionHeader}>
           {Messages.PPL_MOE_ABOUT.intMessage.format({ name: name })}
         </h1>
-        <span className={classes.userInfoSectionBio}
+        <span className={classes.userInfoText}
           dangerouslySetInnerHTML={{ __html: bioHTML }}>
         </span>
       </div>

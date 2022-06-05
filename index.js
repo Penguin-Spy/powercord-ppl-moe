@@ -151,7 +151,7 @@ module.exports = class PplMoe extends Plugin {
             classes.userProfileTabBarItem = userProfileTabBar.tabBarItem
             classes.infoScroller = `${userProfileInfo.infoScroller} ${userProfileScroller.thin} ${userProfileScroller.fade}`
             classes.userInfoSectionHeader = `${userProfileInfo.userInfoSectionHeader} ${userProfileHeader.base}`
-            classes.userInfoSectionBio = `${userProfileInfo.userBio} ${getModule(['markup'], false).markup}`
+            classes.userInfoText = `${userProfileInfo.userInfoText} ${getModule(['markup'], false).markup}`
             classes.lazyLoadedClasses = true
           }
 
