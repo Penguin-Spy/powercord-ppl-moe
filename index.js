@@ -140,6 +140,8 @@ module.exports = class PplMoe extends Plugin {
       m => m.default && m.default.displayName === 'UserProfileModal',
       UserProfileModal => {
         inject('ppl-moe-user-profile-modal', UserProfileModal, 'default', ([{ user }], res) => {
+          //console.log(res)  // enable to find UserProfileTabBar modules if console is getting "cant read property 'props' of undefined"
+
           // these must be loaded here because modal classes are lazily loaded
           if (!classes.lazyLoadedClasses) {
             let userProfileTabBar = getAllModules(['tabBar', 'tabBarItem', 'root'], false)[0]
@@ -158,9 +160,12 @@ module.exports = class PplMoe extends Plugin {
           // fetch their profile for later viewing
           pplMoeStore.ensureProfile(user.id)
 
-          // inject into this instance of the function that decides which tab to display
           if (isInjected('ppl-moe-user-profile-tab-selector')) uninject('ppl-moe-user-profile-tab-selector')
-          inject('ppl-moe-user-profile-tab-selector', res.props.children.props.children[1].props.children, 'type', ([props], res) => {
+          // inject into this instance of the function that decides which tab to display
+          // HOW TO FIND: enable console.log(res), search tree through "topSection-" to find a child that has props: { selectedSection: <whatever> }
+          //  and a type that's an unnamed function that has a switch statement with cases of `UserProfileSections.foo`
+          //  right-click->copy property path of child (not type, the member of the array!), prepend "res." and replace location below
+          inject('ppl-moe-user-profile-tab-selector', res.props.children.props.children.props.children[1].props.children, 'type', ([props], res) => {
             if (props.selectedSection != "PPL_MOE") return res
 
             const profile = pplMoeStore.getProfile(user.id)
@@ -172,10 +177,14 @@ module.exports = class PplMoe extends Plugin {
             })
           })
 
-          // inject into this insance of the tab bar (only after we've rendered it the 1st time)
+
           if (isInjected('ppl-moe-user-profile-tab-bar')) uninject('ppl-moe-user-profile-tab-bar')
-          if (res.props.children.props.children[0].props.children[1]) { // if tab bar exists
-            inject('ppl-moe-user-profile-tab-bar', res.props.children.props.children[0].props.children[1], 'type', ([props], res) => {
+          // inject into this insance of the tab bar (only after we've rendered it the 1st time)
+          // HOW TO FIND: enable console.log(res), search tree through "topSection-" to find a child that has props: { section: <whatever>, setSection: f(e) }
+          //  and a type that's function with `displayName: UserProfileTabBar`
+          //  right-click->copy property path of child (not type, the member of the array!), prepend "res." and replace location below IN BOTH IF STATEMENT & INJECT
+          if (res.props.children.props.children.props.children[0].props.children[1]) { // if tab bar exists
+            inject('ppl-moe-user-profile-tab-bar', res.props.children.props.children.props.children[0].props.children[1], 'type', ([props], res) => {
               const profile = pplMoeStore.getProfile(props.user.id)
               if (!profile) res.props.children.props.className += ` ${classes.pplMoeDisableTab}`
               return res
