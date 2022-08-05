@@ -1,3 +1,8 @@
+> Because Powercord's development has ceased, this plugin will no longer be developed, nor support given. You are free to fork & update it for use with Powercord forks, following the terms of the [LICENSE](LICENSE).  
+I will be porting this plugin to [GooseMod](https://goosemod.com "A light, secure, and easy to use Discord mod"), and will update this message when I have a GitHub repo created.  
+The fabled [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") port may yet still happen as well.  
+The original README.md is as follows:
+
 # Powercord ppl.moe
 ![clones](https://img.shields.io/endpoint?url=https://githubstats.penguinspy.repl.co/shields/powercord-ppl-moe) [![Powercord](https://img.shields.io/badge/client-Powercord-7289D9?logo=discord&logoColor=fff)](https://powercord.dev/)  
 This is a powercord plugin that displays a user's ppl.moe profile as a new tab in the user's modal.  
@@ -18,7 +23,7 @@ It also shows their pronouns next to their name in messages (similar to & compat
 Open command prompt and run:  
 ```cd powercord/src/Powercord/plugins && git clone https://github.com/Penguin-Spy/powercord-ppl-moe```  
 Or see [this message](https://discord.com/channels/538759280057122817/755005584322854972/847521255116898394 "#plugin-links") in the Powercord server if you have [Powercord Downloader](https://github.com/LandenStephenss/PowercordPluginDownloader).  
-Only Powercord is supported at this time. I may write a version for [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") at some point.
+~~Only Powercord is supported at this time.~~ I may write a version for [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") at some point.
 
 # License
 MIT License, Copyright Penguin_Spy 2021  
