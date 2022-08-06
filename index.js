@@ -1,3 +1,8 @@
+/* powercord-ppl-moe
+ * Copyright (c) 2021-2022 Penguin_Spy
+ * See LICENSE for full text
+*/
+
 const { Plugin } = require('powercord/entities')
 const { inject, uninject, isInjected } = require('powercord/injector')
 const { React, getModule, getAllModules, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack')
