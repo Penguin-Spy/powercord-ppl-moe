@@ -3,7 +3,14 @@ const { SwitchItem } = require('powercord/components/settings')
 
 module.exports = class Settings extends React.Component {
   render() {
-    const pronounDBisPresent = true //powercord.pluginManager.isInstalled("pronoundb-powercord") && powercord.pluginManager.isEnabled("pronoundb-powercord")
+    let pronounDBisPresent = true
+    if (typeof topaz === "object") {
+      // check all topaz modules' GitHub repo name to see if one has "pronoundb-powercord"
+      pronounDBisPresent = topaz.getInstalled().some(module => module.split('/')[1] === "pronoundb-powercord")
+    } else if (typeof powercord === "object") {
+      pronounDBisPresent = powercord.pluginManager.isInstalled("pronoundb-powercord") && powercord.pluginManager.isEnabled("pronoundb-powercord")
+    }
+
     return (
       <div className="ppl-moe-settings">
         <SwitchItem

@@ -24,45 +24,46 @@ module.exports = class PplMoe extends Plugin {
       render: Settings
     })
 
-    // yoinked from the discord.bio plugin
-    /*powercord.api.connections.registerConnection({
-      type: "ppl-moe",
-      name: "ppl.moe",
-      color: "#DB325C",
-      icon: {
-        color: "https://i.imgur.com/KqbpO1x.png"
-      },
-      enabled: true,
-      fetchAccount: async (id) => {
-        try {
-          if (!id) ({ id } = (await getModule(["getCurrentUser"])).getCurrentUser())
+    if (powercord.api.connections.registerConnection) {
+      // yoinked from the discord.bio plugin
+      powercord.api.connections.registerConnection({
+        type: "ppl-moe",
+        name: "ppl.moe",
+        color: "#DB325C",
+        icon: {
+          color: "https://i.imgur.com/KqbpO1x.png"
+        },
+        enabled: true,
+        fetchAccount: async (id) => {
+          try {
+            if (!id) ({ id } = (await getModule(["getCurrentUser"])).getCurrentUser())
 
-          await pplMoeStore.ensureProfile(id)
-          const profile = pplMoeStore.getProfile(id)
+            await pplMoeStore.ensureProfile(id)
+            const profile = pplMoeStore.getProfile(id)
 
-          if (!profile || profile.banned) return
+            if (!profile || profile.banned) return
 
-          return ({
-            type: "ppl-moe",
-            url: profile.unique_url,
-            name: profile.name,
-            verified: true
-          })
-        } catch (e) {
-          console.warn(e)
-        }
-      },
-      getPlatformUserUrl: (account) => {
-        return `https://ppl.moe/u/${encodeURIComponent(account.url)}`
-      },
-      onDisconnect: () => void 0
-    })*/
-    // end of yoinkage
+            return ({
+              type: "ppl-moe",
+              url: profile.unique_url,
+              name: profile.name,
+              verified: true
+            })
+          } catch (e) {
+            console.warn(e)
+          }
+        },
+        getPlatformUserUrl: (account) => {
+          return `https://ppl.moe/u/${encodeURIComponent(account.url)}`
+        },
+        onDisconnect: () => { }
+      })
+      // end of yoinkage
+    }
 
     const MessageHeader = await this._getMessageHeader()
     const TabBar = await getModuleByDisplayName("TabBar")
 
-    //const pplMoeStore = getStore()
     const classes = {
       pplMoeSectionHeader: "ppl-moe-section-header",
       pplMoeSectionInfo: "ppl-moe-section-info",
@@ -204,7 +205,9 @@ module.exports = class PplMoe extends Plugin {
   }
 
   pluginWillUnload() {
-    powercord.api.connections.unregisterConnection('ppl-moe')
+    if (powercord.api.connections.unregisterConnection) {
+      powercord.api.connections.unregisterConnection('ppl-moe')
+    }
     powercord.api.settings.unregisterSettings('ppl-moe')
 
     uninject('ppl-moe-messages-header')
