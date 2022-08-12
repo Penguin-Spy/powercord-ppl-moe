@@ -3,7 +3,7 @@ const { SwitchItem } = require('powercord/components/settings')
 
 module.exports = class Settings extends React.Component {
   render() {
-    const pronounDBisPresent = powercord.pluginManager.isInstalled("pronoundb-powercord") && powercord.pluginManager.isEnabled("pronoundb-powercord")
+    const pronounDBisPresent = true //powercord.pluginManager.isInstalled("pronoundb-powercord") && powercord.pluginManager.isEnabled("pronoundb-powercord")
     return (
       <div className="ppl-moe-settings">
         <SwitchItem

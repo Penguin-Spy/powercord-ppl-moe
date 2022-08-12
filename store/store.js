@@ -37,7 +37,7 @@ class PplMoeStore extends Flux.Store {
 
     if (profile.banned) profile = false
 
-    FluxDispatcher.dirtyDispatch({
+    FluxDispatcher.dispatch({
       type: 'PPL_MOE_PROFILE_LOADED',
       id: id,
       loadedProfile: profile

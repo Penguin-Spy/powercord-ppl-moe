@@ -4,7 +4,7 @@
 */
 
 const { Plugin } = require('powercord/entities')
-const { inject, uninject, isInjected } = require('powercord/injector')
+const { inject, uninject /*, isInjected*/ } = require('powercord/injector')
 const { React, getModule, getAllModules, getModuleByDisplayName, i18n: { Messages } } = require('powercord/webpack')
 
 const pplMoeStore = require('./store/store.js')
@@ -25,7 +25,7 @@ module.exports = class PplMoe extends Plugin {
     })
 
     // yoinked from the discord.bio plugin
-    powercord.api.connections.registerConnection({
+    /*powercord.api.connections.registerConnection({
       type: "ppl-moe",
       name: "ppl.moe",
       color: "#DB325C",
@@ -56,7 +56,7 @@ module.exports = class PplMoe extends Plugin {
         return `https://ppl.moe/u/${encodeURIComponent(account.url)}`
       },
       onDisconnect: () => void 0
-    })
+    })*/
     // end of yoinkage
 
     const MessageHeader = await this._getMessageHeader()
@@ -165,7 +165,7 @@ module.exports = class PplMoe extends Plugin {
           // fetch their profile for later viewing
           pplMoeStore.ensureProfile(user.id)
 
-          if (isInjected('ppl-moe-user-profile-tab-selector')) uninject('ppl-moe-user-profile-tab-selector')
+          //if (isInjected('ppl-moe-user-profile-tab-selector')) uninject('ppl-moe-user-profile-tab-selector')
           // inject into this instance of the function that decides which tab to display
           // HOW TO FIND: enable console.log(res), search tree through "topSection-" to find a child that has props: { selectedSection: <whatever> }
           //  and a type that's an unnamed function that has a switch statement with cases of `UserProfileSections.foo`
@@ -183,7 +183,7 @@ module.exports = class PplMoe extends Plugin {
           })
 
 
-          if (isInjected('ppl-moe-user-profile-tab-bar')) uninject('ppl-moe-user-profile-tab-bar')
+          //if (isInjected('ppl-moe-user-profile-tab-bar')) uninject('ppl-moe-user-profile-tab-bar')
           // inject into this insance of the tab bar (only after we've rendered it the 1st time)
           // HOW TO FIND: enable console.log(res), search tree through "topSection-" to find a child that has props: { section: <whatever>, setSection: f(e) }
           //  and a type that's function with `displayName: UserProfileTabBar`
