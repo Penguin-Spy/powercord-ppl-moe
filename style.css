@@ -1,5 +1,5 @@
 /* hide tab button when disabled by user modal code */
-.ppl-moe-disable-tab > [data-item-id="PPL_MOE"] {
+.ppl-moe-disable-tab > [aria-controls="ppl_moe-tab"] {
   display: none;
 }
 
