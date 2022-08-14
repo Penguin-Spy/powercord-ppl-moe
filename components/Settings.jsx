@@ -4,10 +4,12 @@ const { SwitchItem } = require('powercord/components/settings')
 module.exports = class Settings extends React.Component {
   render() {
     let pronounDBisPresent = true
-    if (typeof topaz === "object") {
+
+    // check topaz & powercord to see if pronounDB is installed. if we're somehow running in another client mod (!?), we just default to true ig
+    if (typeof topaz !== "undefined") {
       // check all topaz modules' GitHub repo name to see if one has "pronoundb-powercord"
       pronounDBisPresent = topaz.getInstalled().some(module => module.split('/')[1] === "pronoundb-powercord")
-    } else if (typeof powercord === "object") {
+    } else if (typeof powercord !== "undefined") {
       pronounDBisPresent = powercord.pluginManager.isInstalled("pronoundb-powercord") && powercord.pluginManager.isEnabled("pronoundb-powercord")
     }
 
