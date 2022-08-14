@@ -1,5 +1,3 @@
-> Note: This plugin was originally written for [Powercord](https://powercord.dev/). I now develop it for use with [Topaz](https://topaz.goosemod.com/), and it probably works on [Replugged](https://replugged.dev/) too.
-
 # Powercord ppl.moe
 ![clones](https://img.shields.io/endpoint?url=https://githubstats.penguinspy.repl.co/shields/powercord-ppl-moe) [![Powercord](https://img.shields.io/badge/client-Powercord-7289da?logo=discord&logoColor=fff)](https://powercord.dev/) [![Topaz](https://img.shields.io/badge/client-Topaz-fdda0d?logo=discord&logoColor=fff)](https://topaz.goosemod.com/)  [![Replugged](https://img.shields.io/badge/client-Replugged-7289da?logo=discord&logoColor=fff)](https://replugged.dev/)  
 This is a powercord plugin that displays a user's [ppl.moe](https://ppl.moe/) profile as a new tab in the user's modal.  
@@ -17,14 +15,13 @@ It also shows their pronouns next to their name in messages (similar to & compat
 - On client open/reload, the very first user modal opened will not display the tab. However, this fixes itself as soon as you close & reopen any user modal.
 
 # Installation
-## Topaz
-Open the Topaz settings and copy+paste this URL into the "Add Plugin" box: https://github.com/Penguin-Spy/powercord-ppl-moe
-
 ## Replugged/Powercord
 > If you are migrating from Powercord and already have the plugin installed, you don't need to reinstall.  
 
-Open command prompt and run:  
-```cd replugged/src/Powercord/plugins && git clone https://github.com/Penguin-Spy/powercord-ppl-moe```  
+Open this link to install the plugin: https://replugged.dev/install?url=Penguin-Spy/powercord-ppl-moe
+
+## Topaz
+Open the Topaz settings and copy+paste `Penguin-Spy/powercord-ppl-moe` into the "Add Plugin" box, and then press enter.
 
 ## Other client mods
 I may write a version for [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") at some point.  
