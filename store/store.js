@@ -2,7 +2,7 @@ const { Flux, FluxDispatcher } = require('powercord/webpack')
 const { get } = require('powercord/http')
 
 // list of loaded profiles
-let profiles = {}
+profiles = {}
 // profiles[id] == undefined means we don't know if that id has a profile
 //              == false     means we know that id doesn't have a profile
 //              == Object    the object is the user's profile (could be mostly empty &| banned)
@@ -10,38 +10,56 @@ let profiles = {}
 // as well as differentiate between unfetched & nonexistent profiles
 
 // list of profiles currently being fetched
-let requestingProfiles = {}
-// profiles[id] == true  request is currently processing
-//                 false profile has already been requested (no code actually checks for this, just to differentiate in case we need to)
+requestingProfiles = {}
+// requestingProfiles[id] = Promise || undefined || false
+
 
 class PplMoeStore extends Flux.Store {
+
+  // attempt to get the user's profile, and fetch it if we don't have it yet
+  // this will always return either a profile or a promise that will resolve to a profile (profile may be false indicating one does not exist)
   getProfile(id) {
-    return profiles[id]
+    // if we already have the profile, just return it
+    if (id in profiles) return profiles[id]
+    // if we don't have it but we are already fetching it, return the existing promise
+    else if (id in requestingProfiles) return requestingProfiles[id]
+
+    // sets up an asynchronous request for the users profile, and the callbacks to be ran when it returns
+    // the callbacks run the Flux dispatch (todo: why?) and return the processed profile
+    requestingProfiles[id] = get(`https://ppl.moe/api/user/discord/${id}`).then(r => r.body).then(profile => {
+      if (profile.banned) profile = false
+
+      FluxDispatcher.dispatch({
+        type: 'PPL_MOE_PROFILE_LOADED',
+        id: id,
+        loadedProfile: profile
+      })
+      return profile
+
+    }).catch((reason) => {
+      if (reason.statusCode != 404) {
+        console.warn(`ppl.moe profile fetch for ${id} failed:`, reason)
+      }
+
+      FluxDispatcher.dispatch({
+        type: 'PPL_MOE_PROFILE_LOADED',
+        id: id,
+        loadedProfile: false
+      })
+      return false
+
+    }).finally(() => {
+      requestingProfiles[id] = false
+    })
+
+    // return the Promise of that fetch
+    return requestingProfiles[id]
   }
 
-  // ensures we know about a user's profile after it's called (if awaited)
-  // also emits a flux dispatch when complete informing React that we now have the user's profile
-  async ensureProfile(id) {
-    if (id in profiles || id in requestingProfiles) return  // if we already have the profile || we already are requesting it
-
-    let profile
-    try {
-      requestingProfiles[id] = true // prevent re-requesting
-      profile = await get(`https://ppl.moe/api/user/discord/${id}`).then(r => {
-        requestingProfiles[id] = false
-        return r.body
-      })
-    } catch (e) {
-      profile = false // we know this id has no profile
-    }
-
-    if (profile.banned) profile = false
-
-    FluxDispatcher.dispatch({
-      type: 'PPL_MOE_PROFILE_LOADED',
-      id: id,
-      loadedProfile: profile
-    })
+  // simply try to get the user's profile, returning nothing if we haven't fetched it yet
+  // this isn't technically a "synchronous" version, it just doesn't touch async stuff
+  getProfileSync(id) {
+    return profiles[id]
   }
 }
 

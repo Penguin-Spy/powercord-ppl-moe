@@ -20,43 +20,57 @@ module.exports = class PplMoe extends Plugin {
     this.loadStylesheet('style.css')
     powercord.api.settings.registerSettings('ppl-moe', {
       category: this.entityID,
-      label: 'ppl.moe',
+      label: Messages.PPL_MOE,
       render: Settings
     })
 
     if (powercord.api.connections.registerConnection) {
-      // yoinked from the discord.bio plugin
+      const CONNECTION_TYPE = "ppl-moe"
+
       powercord.api.connections.registerConnection({
-        type: "ppl-moe",
-        name: "ppl.moe",
+        type: CONNECTION_TYPE,
+        name: Messages.PPL_MOE,
         color: "#DB325C",
         icon: {
-          color: "https://i.imgur.com/KqbpO1x.png"
+          darkSVG: "https://i.imgur.com/KqbpO1x.png",
+          lightSVG: "https://i.imgur.com/KqbpO1x.png"
         },
         enabled: true,
         fetchAccount: async (id) => {
-          try {
-            if (!id) ({ id } = (await getModule(["getCurrentUser"])).getCurrentUser())
+          const profile = await pplMoeStore.getProfile(id)
 
-            await pplMoeStore.ensureProfile(id)
-            const profile = pplMoeStore.getProfile(id)
+          if (!profile) return
 
-            if (!profile || profile.banned) return
-
-            return ({
-              type: "ppl-moe",
-              url: profile.unique_url,
-              name: profile.name,
-              verified: true
-            })
-          } catch (e) {
-            console.warn(e)
+          return {
+            type: CONNECTION_TYPE,
+            url: profile.unique_url,
+            name: profile.name,
+            verified: true
           }
         },
         getPlatformUserUrl: (account) => {
           return `https://ppl.moe/u/${encodeURIComponent(account.url)}`
         },
-        onDisconnect: () => { }
+        onConnect: (e) => {
+          window.open("https://ppl.moe/li")
+        },
+        onDisconnect: () => {
+          powercord.api.notices.closeToast("ppl-moe-disconnect")
+          powercord.api.notices.sendToast('ppl-moe-disconnect', {
+            header: Messages.PPL_MOE,
+            content: Messages.PPL_MOE_CONNECTION_DISCONNECT_CONTENT,
+            buttons: [{ text: Messages.PPL_MOE_CONNECTION_OK }]
+          });
+        },
+        setVisibility: (visible) => {
+          powercord.api.notices.closeToast("ppl-moe-visibility")
+          powercord.api.notices.sendToast('ppl-moe-visibility', {
+            header: Messages.PPL_MOE,
+            content: Messages.PPL_MOE_CONNECTION_VISIBILITY_CONTENT,
+            buttons: [{ text: Messages.PPL_MOE_CONNECTION_OK }]
+          });
+          return true
+        }
       })
       // end of yoinkage
     }
@@ -130,7 +144,7 @@ module.exports = class PplMoe extends Plugin {
         className: classes.userProfileTabBarItem + (powercord.api.settings.store.getSetting("powercord-ppl-moe", "userModalIcon", false)
           ? " " + classes.pplMoeTabIcon : ""),
         id: "PPL_MOE"
-      }, Messages.PPL_MOE_TAB)
+      }, Messages.PPL_MOE)
 
       // grab the function that sets the 'selectedSection' to the tab's id
       bioTab.props.onItemSelect = res.props.children[0].props.onItemSelect
@@ -164,7 +178,7 @@ module.exports = class PplMoe extends Plugin {
           }
 
           // fetch their profile for later viewing
-          pplMoeStore.ensureProfile(user.id)
+          pplMoeStore.getProfile(user.id)
 
           if (typeof isInjected !== "undefined" && isInjected('ppl-moe-user-profile-tab-selector')) uninject('ppl-moe-user-profile-tab-selector')
           // inject into this instance of the function that decides which tab to display
@@ -174,8 +188,8 @@ module.exports = class PplMoe extends Plugin {
           inject('ppl-moe-user-profile-tab-selector', res.props.children.props.children.props.children[1].props.children, 'type', ([props], res) => {
             if (props.selectedSection != "PPL_MOE") return res
 
-            const profile = pplMoeStore.getProfile(user.id)
-            if (!profile) return res  // shouldn't happen, just return the default USER_INFO tab
+            const profile = pplMoeStore.getProfileSync(user.id)
+            if (!profile) return res  // shouldn't happen (but does), just return the default USER_INFO tab
 
             return React.createElement(Profile, {
               classes: classes,
@@ -191,7 +205,7 @@ module.exports = class PplMoe extends Plugin {
           //  right-click->copy property path of child (not type, the member of the array!), prepend "res." and replace location below IN BOTH IF STATEMENT & INJECT
           if (res.props.children.props.children.props.children[0].props.children[1]) { // if tab bar exists
             inject('ppl-moe-user-profile-tab-bar', res.props.children.props.children.props.children[0].props.children[1], 'type', ([props], res) => {
-              const profile = pplMoeStore.getProfile(props.user.id)
+              const profile = pplMoeStore.getProfileSync(props.user.id)
               if (!profile) res.props.children.props.className += ` ${classes.pplMoeDisableTab}`
               return res
             })

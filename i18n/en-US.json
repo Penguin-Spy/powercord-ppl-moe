@@ -1,5 +1,5 @@
 {
-  "PPL_MOE_TAB": "ppl.moe",
+  "PPL_MOE": "ppl.moe",
   "PPL_MOE_GENDER": "⚧️ Gender",
   "PPL_MOE_PRONOUNS": "⚧️ Pronouns",
   "PPL_MOE_LOCATION": "📍 Location",
@@ -26,7 +26,10 @@
   "PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION": "Hide PronounDB's pronouns if there are ppl.moe ones present",
   "PPL_MOE_SETTINGS_HIDE_PRONOUNDB_DESCRIPTION_INSTALL": "Install PronounDB for this setting to be relevant",
   "PPL_MOE_SETTINGS_SHOW_PROFILE_BADGE": "Show Profile Badge",
-  "PPL_MOE_SETTINGS_SHOW_PROFILE_BADGE_DESCRIPTION": "Show a ppl.moe badge next to a user's name if they have a ppl.moe profile. This will display regardless of if pronouns are displayed.",
+  "PPL_MOE_SETTINGS_SHOW_PROFILE_BADGE_DESCRIPTION": "Show a ppl.moe badge next to a user's name if they have a ppl.moe profile. This will display independently of pronouns.",
   "PPL_MOE_SETTINGS_USER_MODAL_ICON": "User Modal Icon",
-  "PPL_MOE_SETTINGS_USER_MODAL_ICON_DESCRIPTION": "Display an icon instead of text for the User Modal tab."
+  "PPL_MOE_SETTINGS_USER_MODAL_ICON_DESCRIPTION": "Display an icon instead of text for the User Modal tab.",
+  "PPL_MOE_CONNECTION_DISCONNECT_CONTENT": "You cannot disconnect your ppl.moe profile from your Discord account.",
+  "PPL_MOE_CONNECTION_VISIBILITY_CONTENT": "Profile visibility cannot be changed in Discord.",
+  "PPL_MOE_CONNECTION_OK": "Ok"
 }

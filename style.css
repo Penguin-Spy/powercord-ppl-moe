@@ -1,5 +1,7 @@
-/* hide tab button when disabled by user modal code */
-.ppl-moe-disable-tab > [aria-controls="ppl_moe-tab"] {
+/* hide tab button when disabled by user modal code
+ * and when in a modal that's created by another plugin */
+.ppl-moe-disable-tab > [data-item-id="PPL_MOE"],
+.powercord-fake-modal-container [data-item-id="PPL_MOE"] {
   display: none;
 }
 
