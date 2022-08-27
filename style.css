@@ -71,6 +71,9 @@
 }
 .ppl-moe-profile-badge {
   vertical-align: top;
+  margin-left: .25rem;
+  position: relative;
+  top: 1px;
 }
 
 /* Hide pronoundb pronouns if after the ppl.moe ones */
