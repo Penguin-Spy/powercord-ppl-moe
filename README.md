@@ -1,7 +1,9 @@
-> **Note**  
-> This repo has been depreciated in favor of the [Replugged port](https://github.com/Penguin-Spy/replugged-ppl-moe).  
-The fabled [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") port may yet still happen as well.  
-The original README.md is as follows:
+# Use the [Replugged port](https://github.com/Penguin-Spy/replugged-ppl-moe)!!
+
+> **Warning**  
+> This repo has been depreciated in favor of the Replugged port: https://github.com/Penguin-Spy/replugged-ppl-moe.  
+> The fabled [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") port may yet still happen as well.  
+> The original README.md is as follows:
 
 
 # Powercord ppl.moe
