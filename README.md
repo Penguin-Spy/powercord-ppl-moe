@@ -1,3 +1,9 @@
+> **Note**  
+> This repo has been depreciated in favor of the [Replugged port](https://github.com/Penguin-Spy/replugged-ppl-moe).  
+The fabled [Aliucord](https://github.com/Aliucord/Aliucord "A Discord mod for Android") port may yet still happen as well.  
+The original README.md is as follows:
+
+
 # Powercord ppl.moe
 ![clones](https://img.shields.io/endpoint?url=https://githubstats.penguinspy.repl.co/shields/powercord-ppl-moe) [![Powercord](https://img.shields.io/badge/client-Powercord-7289da?logo=discord&logoColor=fff)](https://powercord.dev/) [![Topaz](https://img.shields.io/badge/client-Topaz-fdda0d?logo=discord&logoColor=fff)](https://topaz.goosemod.com/)  [![Replugged](https://img.shields.io/badge/client-Replugged-7289da?logo=discord&logoColor=fff)](https://replugged.dev/)  
 This is a powercord plugin that displays a user's [ppl.moe](https://ppl.moe/) profile as a new tab in the user's modal.  
